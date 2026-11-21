@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Methodology – ATLAS Threshold Detection Rules Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<link href="./rules.html" rel="next">
+<link href="./index.html" rel="prev">
+<link href="./assets/images/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f194567e5c6efeb013b28392ff62c8b4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-fee303ae6e2651b1828198bac5dac9d1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f194567e5c6efeb013b28392ff62c8b4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7a4d1d70176d107a1e293e9347671d6f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-7a4d1d70176d107a1e293e9347671d6f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-7a4d1d70176d107a1e293e9347671d6f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./methodology.html">Methodology</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./assets/images/logo.svg" alt="Seeking Eureka" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./assets/images/logo.svg" alt="Seeking Eureka" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methodology.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Methodology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rule Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./robustness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Summary &amp; Robustness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leadership.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">For Leaders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reproducibility</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">contents</h2>
+   
+  <ul>
+  <li><a href="#terms-used-on-this-site" id="toc-terms-used-on-this-site" class="nav-link active" data-scroll-target="#terms-used-on-this-site">Terms used on this site</a>
+  <ul class="collapse">
+  <li><a href="#frr-the-miss-rate" id="toc-frr-the-miss-rate" class="nav-link" data-scroll-target="#frr-the-miss-rate">FRR: the miss rate</a></li>
+  <li><a href="#far-the-false-positive-rate" id="toc-far-the-false-positive-rate" class="nav-link" data-scroll-target="#far-the-false-positive-rate">FAR: the false-positive rate</a></li>
+  <li><a href="#precision-and-prevalence" id="toc-precision-and-prevalence" class="nav-link" data-scroll-target="#precision-and-prevalence">Precision and prevalence</a></li>
+  <li><a href="#eer-the-equal-error-rate" id="toc-eer-the-equal-error-rate" class="nav-link" data-scroll-target="#eer-the-equal-error-rate">EER: the Equal Error Rate</a></li>
+  </ul></li>
+  <li><a href="#sec-model" id="toc-sec-model" class="nav-link" data-scroll-target="#sec-model">The calibration model</a></li>
+  <li><a href="#sec-decision-rules" id="toc-sec-decision-rules" class="nav-link" data-scroll-target="#sec-decision-rules">Decision rules</a>
+  <ul class="collapse">
+  <li><a href="#eer-based-rule" id="toc-eer-based-rule" class="nav-link" data-scroll-target="#eer-based-rule">EER-based rule</a></li>
+  <li><a href="#cost-weighted-rule" id="toc-cost-weighted-rule" class="nav-link" data-scroll-target="#cost-weighted-rule">Cost-weighted rule</a></li>
+  </ul></li>
+  <li><a href="#uncertainty" id="toc-uncertainty" class="nav-link" data-scroll-target="#uncertainty">Uncertainty</a></li>
+  <li><a href="#sec-empirical" id="toc-sec-empirical" class="nav-link" data-scroll-target="#sec-empirical">Empirical curves, when score data exist</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Methodology</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">ATLAS Threshold Detection Rules Analysis: error rates, the calibration model and the decision rules</p>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="terms-used-on-this-site" class="level2">
+<h2 class="anchored" data-anchor-id="terms-used-on-this-site">Terms used on this site</h2>
+<p>In this report FRR is the miss rate (false-negative rate) and FAR is the false-positive rate. These labels come from biometrics, where the meanings are reversed: there, a “false rejection” turns away a genuine user and a “false acceptance” admits an impostor. We use the detection-engineering mapping throughout.</p>
+<p>A rule raises an alert when an event’s score exceeds the rule’s <strong>threshold</strong>. The two threshold actions are defined once:</p>
+<ul>
+<li><strong>TIGHTEN</strong> = raise the alerting threshold (fewer alerts, more misses).</li>
+<li><strong>LOOSEN</strong> = lower the alerting threshold (more alerts, fewer misses).</li>
+</ul>
+<p>A third action, <strong>HOLD</strong>, leaves the threshold where it is. A fourth, <strong>IMPROVE SIGNAL</strong>, says that no threshold move is worth making until the rule’s detection features improve (see <a href="#sec-decision-rules">Decision rules</a>).</p>
+<section id="frr-the-miss-rate" class="level3">
+<h3 class="anchored" data-anchor-id="frr-the-miss-rate">FRR: the miss rate</h3>
+<p>FRR is the share of actual threats the rule failed to flag (Mattei 2025, §8.5.1). It is computed only over confirmed threats (true positives plus false negatives), so it isolates a rule’s blind spot from its noise problem. A rule can have an excellent false-positive rate and still miss many attacks. A high FRR means the threshold is set too high for the threats the rule exists to catch.</p>
+<p><span class="math display">\[\text{FRR} = \frac{FN}{TP + FN}\]</span></p>
+<p>Tracking FRR on its own is what keeps an analyst from mistaking a quiet alert queue for a secure environment. A rule with a high FRR often looks well-behaved on a dashboard, with few alerts and low volume, while quietly missing the events it exists to catch. That silence could just as easily mean the rule has stopped seeing what it was built to find.</p>
+</section>
+<section id="far-the-false-positive-rate" class="level3">
+<h3 class="anchored" data-anchor-id="far-the-false-positive-rate">FAR: the false-positive rate</h3>
+<p>FAR is the share of benign events the rule incorrectly flags as threats (Mattei 2025, §8.5.2). A high FAR is the main driver of alert fatigue: analysts are buried in noise, and real threats get lost in the queue.</p>
+<p><span class="math display">\[\text{FAR} = \frac{FP}{FP + TN}\]</span></p>
+<p>FAR is computed over the much larger benign population, so even a small rise can mean hundreds of extra tickets in a busy environment. That volume compounds: each false positive an analyst clears trains them, consciously or not, to move faster and scrutinize less on the next one. Under those conditions a genuine alert is most likely to be closed without a second look. FAR also depends on what counts as one benign event (a login, a session, a host-hour), so the unit of analysis must be stated for every rule.</p>
+</section>
+<section id="precision-and-prevalence" class="level3">
+<h3 class="anchored" data-anchor-id="precision-and-prevalence">Precision and prevalence</h3>
+<p>Analysts feel precision, the share of alerts that are real threats, more directly than FAR. Precision depends on <strong>prevalence</strong> <span class="math inline">\(p\)</span>, the share of all events that are threats:</p>
+<p><span class="math display">\[\text{Precision} = \frac{TP}{TP + FP} = \frac{(1-\text{FRR})\,p}{(1-\text{FRR})\,p + \text{FAR}\,(1-p)}\]</span></p>
+<p>The same FRR and FAR give far lower precision when threats are rarer. The <a href="./robustness.html#sec-prevalence">prevalence sensitivity table</a> shows how much.</p>
+</section>
+<section id="eer-the-equal-error-rate" class="level3">
+<h3 class="anchored" data-anchor-id="eer-the-equal-error-rate">EER: the Equal Error Rate</h3>
+<p>EER is the error rate at the threshold <span class="math inline">\(t^*\)</span> where FRR equals FAR (Mattei 2025, §8.5.3):</p>
+<p><span class="math display">\[\text{EER} = \text{FRR}(t^*) = \text{FAR}(t^*)\]</span></p>
+<p>In the book’s words, “The EER is a critical metric representing the point at which the FRR and FAR are equal. It serves as a balanced measure of the system’s overall accuracy. The lower the EER, the more reliable the system is at distinguishing between legitimate and illegitimate activities” (Mattei 2025, §8.5.3). EER is therefore best read as a measure of how well a rule separates threats from benign events, not as a place every threshold must sit. Moving a threshold slides the rule along its curve, trading one error for the other. Only a better signal lowers both.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</section>
+</section>
+<section id="sec-model" class="level2">
+<h2 class="anchored" data-anchor-id="sec-model">The calibration model</h2>
+<p>One confusion matrix gives one point: the FRR and FAR at the current threshold. To see how the errors would change at other thresholds, the analysis assumes an <strong>equal-variance two-Gaussian model</strong>. Benign event scores follow <span class="math inline">\(N(0, 1)\)</span>, threat scores follow <span class="math inline">\(N(d', 1)\)</span>, and the rule alerts when the score exceeds <span class="math inline">\(t\)</span>:</p>
+<p><span class="math display">\[\text{FAR}(t) = 1 - \Phi(t), \qquad \text{FRR}(t) = \Phi(t - d')\]</span></p>
+<p>The observed point fixes both unknowns: <span class="math inline">\(t_{\text{current}} = \Phi^{-1}(1 - \text{FAR})\)</span> and <span class="math inline">\(d' = t_{\text{current}} - \Phi^{-1}(\text{FRR})\)</span>. The EER threshold is then <span class="math inline">\(t^* = d'/2\)</span> and <span class="math inline">\(\text{EER} = \Phi(-d'/2)\)</span>.</p>
+<p><strong>d′ (d-prime)</strong> is the distance between the benign and threat score distributions, in standard deviations. It measures how separable the signal is. A rule with low d′ has no good threshold, because every setting trades a lot of one error for a little of the other. The fix for low d′ is better features, not a different threshold.</p>
+<p>Two caveats apply to every chart on this site:</p>
+<ul>
+<li>The curve passes through the observed point by construction. It shows an assumption, not a measurement. Real detection scores are often skewed, heavy-tailed or discrete (for example, integer counts of failed logins).</li>
+<li>The threshold axis is in model units (benign-score z), not in units an engineer can type into a SIEM. Putting a recommendation into practice means mapping it back to real units, ideally through an <a href="#sec-empirical">empirical curve</a>.</li>
+</ul>
+</section>
+<section id="sec-decision-rules" class="level2">
+<h2 class="anchored" data-anchor-id="sec-decision-rules">Decision rules</h2>
+<section id="eer-based-rule" class="level3">
+<h3 class="anchored" data-anchor-id="eer-based-rule">EER-based rule</h3>
+<p>The original ATLAS reading compares FRR with FAR at the current threshold. It recommends LOOSEN when FRR exceeds FAR by more than 2 percentage points, TIGHTEN when FAR exceeds FRR by more than that, and HOLD otherwise. The 2-point band is a design choice, not from the book.</p>
+</section>
+<section id="cost-weighted-rule" class="level3">
+<h3 class="anchored" data-anchor-id="cost-weighted-rule">Cost-weighted rule</h3>
+<p>Let <span class="math inline">\(C\)</span> be the cost of one missed threat divided by the cost of one false alarm. The expected cost per event at threshold <span class="math inline">\(t\)</span> is <span class="math inline">\(C\,p\,\text{FRR}(t) + (1-p)\,\text{FAR}(t)\)</span>. Under the model, it is lowest at</p>
+<p><span class="math display">\[t_{\text{opt}} = \frac{d'}{2} + \frac{1}{d'} \ln\!\left(\frac{1-p}{C\,p}\right)\]</span></p>
+<p>Setting <span class="math inline">\(t_{\text{opt}} = t^*\)</span> shows what the EER assumes. <strong>EER is equivalent to a cost ratio of</strong> <span class="math inline">\((1-p)/p\)</span>, which is 9:1 at the 10% prevalence in this dataset and about 1,000:1 at 0.1% prevalence. <strong>Choosing EER is therefore an implicit risk-appetite choice</strong>, and it is the same choice for every rule regardless of consequence.</p>
+<p>The cost-weighted rule makes that choice explicit, with one cost ratio per rule set from risk appetite (see the <a href="./rules.html#sec-rules-table">rules table</a>). It returns:</p>
+<ul>
+<li><strong>TIGHTEN</strong> if <span class="math inline">\(t_{\text{current}} &lt; t_{\text{opt}} - \delta\)</span>, <strong>LOOSEN</strong> if <span class="math inline">\(t_{\text{current}} &gt; t_{\text{opt}} + \delta\)</span>, and <strong>HOLD</strong> otherwise, with <span class="math inline">\(\delta\)</span> = 0.1 model units;</li>
+<li><strong>IMPROVE SIGNAL</strong> instead, if <span class="math inline">\(d' &lt;\)</span> 2 and moving to <span class="math inline">\(t_{\text{opt}}\)</span> would cut expected cost by less than 10%.</li>
+</ul>
+<p>Both rules are shown side by side throughout the site so the difference stays visible.</p>
+</section>
+</section>
+<section id="uncertainty" class="level2">
+<h2 class="anchored" data-anchor-id="uncertainty">Uncertainty</h2>
+<p>Each rule has only a hundred or so confirmed threats, so the error rates are noisy. FRR and FAR are reported with 95% Wilson score intervals. To test whether a recommendation survives that noise, the counts are resampled 10,000 times: <span class="math inline">\(fn^* \sim \text{Binomial}(TP + FN, \text{FRR})\)</span> and <span class="math inline">\(fp^* \sim \text{Binomial}(FP + TN, \text{FAR})\)</span>, with a fixed seed (2026). Both decision rules are re-applied to every draw. A recommendation reproduced in fewer than 80% of draws is labelled <strong>low confidence</strong>. The results are on <a href="./robustness.html#sec-robustness">Summary &amp; Robustness</a>.</p>
+</section>
+<section id="sec-empirical" class="level2">
+<h2 class="anchored" data-anchor-id="sec-empirical">Empirical curves, when score data exist</h2>
+<p>The honest alternative to the Gaussian model is to measure FRR and FAR at several real thresholds, using replayed logs or stored scores, and plot the measured curve. <code>build_empirical_curve()</code> takes one row per threshold, with columns <code>threshold</code>, <code>tp</code>, <code>fp</code>, <code>fn</code> and <code>tn</code>, and computes FRR and FAR at each. The example below uses five illustrative thresholds for a brute-force rule, expressed in failed attempts per account-hour. The middle row reproduces the Brute Force Login counts used on the rest of the site.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>empirical_example <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>threshold, <span class="sc">~</span>tp, <span class="sc">~</span>fp, <span class="sc">~</span>fn, <span class="sc">~</span>tn,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>           <span class="dv">3</span>,  <span class="dv">97</span>, <span class="dv">540</span>,   <span class="dv">3</span>, <span class="dv">360</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>           <span class="dv">5</span>,  <span class="dv">90</span>, <span class="dv">380</span>,  <span class="dv">10</span>, <span class="dv">520</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>           <span class="dv">8</span>,  <span class="dv">80</span>, <span class="dv">200</span>,  <span class="dv">20</span>, <span class="dv">700</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>          <span class="dv">12</span>,  <span class="dv">62</span>,  <span class="dv">95</span>,  <span class="dv">38</span>, <span class="dv">805</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>          <span class="dv">20</span>,  <span class="dv">40</span>,  <span class="dv">30</span>,  <span class="dv">60</span>, <span class="dv">870</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>empirical_curve <span class="ot">&lt;-</span> <span class="fu">build_empirical_curve</span>(empirical_example)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>empirical_curve <span class="sc">|&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_empirical_curve</span>(<span class="at">x_label =</span> <span class="st">"Threshold (failed attempts per account-hour)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-empirical" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-empirical-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="methodology_files/figure-html/fig-empirical-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Illustrative empirical FRR and FAR curve for a brute-force rule at five real thresholds (failed attempts per account-hour). Steps join the measured points; no distributional model is assumed."><img src="methodology_files/figure-html/fig-empirical-1.png" class="img-fluid figure-img" width="960"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-empirical-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Illustrative empirical FRR and FAR curve for a brute-force rule at five real thresholds (failed attempts per account-hour). Steps join the measured points; no distributional model is assumed.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>How to read the plot.</strong> The horizontal axis is the rule’s real setting: how many failed logins an account needs within an hour before an alert fires. The blue line is the share of real attacks missed at each setting, and the red line is the share of harmless activity wrongly flagged. Each dot is a setting that was actually tested. The flat steps between dots show that nothing is assumed about the untested settings in between.</p>
+<p><strong>What the plot tells you.</strong> Raising the setting from 3 to 20 failed attempts cuts false alarms from 60% to 3% of harmless activity. It also raises missed attacks from 3% to 60%. No setting makes both errors small, so choosing one means judging which error costs more. Once real log data exist, measured curves like this one, in units an engineer can configure, should replace the modelled curves used elsewhere.</p>
+
+
+<!-- -->
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The single-point shortcut <span class="math inline">\((\text{FRR} + \text{FAR})/2\)</span> equals the EER only when the current point is already at the crossover. On this site it appears only as a comparison column, labelled “Mean of FRR &amp; FAR”.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Overview">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Overview</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./rules.html" class="pagination-link" aria-label="Rule Analysis">
+        <span class="nav-page-text">Rule Analysis</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Methodology"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "ATLAS Threshold Detection Rules Analysis: error rates, the calibration model and the decision rules"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load}</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/setup.R"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/atlas.R"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/analysis.R"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>p_data <span class="ot">&lt;-</span> res[[<span class="dv">1</span>]]<span class="sc">$</span>prevalence</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## Terms used on this site</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>In this report FRR is the miss rate (false-negative rate) and FAR is the false-positive rate. These labels come from biometrics, where the meanings are reversed: there, a "false rejection" turns away a genuine user and a "false acceptance" admits an impostor. We use the detection-engineering mapping throughout.</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>A rule raises an alert when an event's score exceeds the rule's **threshold**. The two threshold actions are defined once:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**TIGHTEN** = raise the alerting threshold (fewer alerts, more misses).</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**LOOSEN** = lower the alerting threshold (more alerts, fewer misses).</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>A third action, **HOLD**, leaves the threshold where it is. A fourth, **IMPROVE SIGNAL**, says that no threshold move is worth making until the rule's detection features improve (see <span class="co">[</span><span class="ot">Decision rules</span><span class="co">](#sec-decision-rules)</span>).</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### FRR: the miss rate</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>FRR is the share of actual threats the rule failed to flag (Mattei 2025, §8.5.1). It is computed only over confirmed threats (true positives plus false negatives), so it isolates a rule's blind spot from its noise problem. A rule can have an excellent false-positive rate and still miss many attacks. A high FRR means the threshold is set too high for the threats the rule exists to catch.</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>$$\text{FRR} = \frac{FN}{TP + FN}$$</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>Tracking FRR on its own is what keeps an analyst from mistaking a quiet alert queue for a secure environment. A rule with a high FRR often looks well-behaved on a dashboard, with few alerts and low volume, while quietly missing the events it exists to catch. That silence could just as easily mean the rule has stopped seeing what it was built to find.</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### FAR: the false-positive rate</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>FAR is the share of benign events the rule incorrectly flags as threats (Mattei 2025, §8.5.2). A high FAR is the main driver of alert fatigue: analysts are buried in noise, and real threats get lost in the queue.</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>$$\text{FAR} = \frac{FP}{FP + TN}$$</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>FAR is computed over the much larger benign population, so even a small rise can mean hundreds of extra tickets in a busy environment. That volume compounds: each false positive an analyst clears trains them, consciously or not, to move faster and scrutinize less on the next one. Under those conditions a genuine alert is most likely to be closed without a second look. FAR also depends on what counts as one benign event (a login, a session, a host-hour), so the unit of analysis must be stated for every rule.</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">### Precision and prevalence</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>Analysts feel precision, the share of alerts that are real threats, more directly than FAR. Precision depends on **prevalence** $p$, the share of all events that are threats:</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>$$\text{Precision} = \frac{TP}{TP + FP} = \frac{(1-\text{FRR})\,p}{(1-\text{FRR})\,p + \text{FAR}\,(1-p)}$$</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>The same FRR and FAR give far lower precision when threats are rarer. The <span class="co">[</span><span class="ot">prevalence sensitivity table</span><span class="co">](robustness.qmd#sec-prevalence)</span> shows how much.</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="fu">### EER: the Equal Error Rate</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>EER is the error rate at the threshold $t^*$ where FRR equals FAR (Mattei 2025, §8.5.3):</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>$$\text{EER} = \text{FRR}(t^*) = \text{FAR}(t^*)$$</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>In the book's words, "The EER is a critical metric representing the point at which the FRR and FAR are equal. It serves as a balanced measure of the system's overall accuracy. The lower the EER, the more reliable the system is at distinguishing between legitimate and illegitimate activities" (Mattei 2025, §8.5.3). EER is therefore best read as a measure of how well a rule separates threats from benign events, not as a place every threshold must sit. Moving a threshold slides the rule along its curve, trading one error for the other. Only a better signal lowers both.<span class="ot">[^mean]</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="ot">[^mean]: </span>The single-point shortcut $(\text{FRR} + \text{FAR})/2$ equals the EER only when the current point is already at the crossover. On this site it appears only as a comparison column, labelled "Mean of FRR &amp; FAR".</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="fu">## The calibration model {#sec-model}</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>One confusion matrix gives one point: the FRR and FAR at the current threshold. To see how the errors would change at other thresholds, the analysis assumes an **equal-variance two-Gaussian model**. Benign event scores follow $N(0, 1)$, threat scores follow $N(d', 1)$, and the rule alerts when the score exceeds $t$:</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>$$\text{FAR}(t) = 1 - \Phi(t), \qquad \text{FRR}(t) = \Phi(t - d')$$</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>The observed point fixes both unknowns: $t_{\text{current}} = \Phi^{-1}(1 - \text{FAR})$ and $d' = t_{\text{current}} - \Phi^{-1}(\text{FRR})$. The EER threshold is then $t^* = d'/2$ and $\text{EER} = \Phi(-d'/2)$.</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>**d′ (d-prime)** is the distance between the benign and threat score distributions, in standard deviations. It measures how separable the signal is. A rule with low d′ has no good threshold, because every setting trades a lot of one error for a little of the other. The fix for low d′ is better features, not a different threshold.</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>Two caveats apply to every chart on this site:</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The curve passes through the observed point by construction. It shows an assumption, not a measurement. Real detection scores are often skewed, heavy-tailed or discrete (for example, integer counts of failed logins).</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The threshold axis is in model units (benign-score z), not in units an engineer can type into a SIEM. Putting a recommendation into practice means mapping it back to real units, ideally through an <span class="co">[</span><span class="ot">empirical curve</span><span class="co">](#sec-empirical)</span>.</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decision rules {#sec-decision-rules}</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="fu">### EER-based rule</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>The original ATLAS reading compares FRR with FAR at the current threshold. It recommends LOOSEN when FRR exceeds FAR by more than <span class="in">`r number(params$eer_tolerance * 100, 1)`</span> percentage points, TIGHTEN when FAR exceeds FRR by more than that, and HOLD otherwise. The <span class="in">`r number(params$eer_tolerance * 100, 1)`</span>-point band is a design choice, not from the book.</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cost-weighted rule</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>Let $C$ be the cost of one missed threat divided by the cost of one false alarm. The expected cost per event at threshold $t$ is $C\,p\,\text{FRR}(t) + (1-p)\,\text{FAR}(t)$. Under the model, it is lowest at</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>$$t_{\text{opt}} = \frac{d'}{2} + \frac{1}{d'} \ln<span class="sc">\!</span>\left(\frac{1-p}{C\,p}\right)$$</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>Setting $t_{\text{opt}} = t^*$ shows what the EER assumes. **EER is equivalent to a cost ratio of** $(1-p)/p$, which is `r number((1 - p_data) / p_data, 1)`:1 at the `r pct(p_data, 1)` prevalence in this dataset and about 1,000:1 at 0.1% prevalence. **Choosing EER is therefore an implicit risk-appetite choice**, and it is the same choice for every rule regardless of consequence.</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>The cost-weighted rule makes that choice explicit, with one cost ratio per rule set from risk appetite (see the <span class="co">[</span><span class="ot">rules table</span><span class="co">](rules.qmd#sec-rules-table)</span>). It returns:</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**TIGHTEN** if $t_{\text{current}} &lt; t_{\text{opt}} - \delta$, **LOOSEN** if $t_{\text{current}} &gt; t_{\text{opt}} + \delta$, and **HOLD** otherwise, with $\delta$ = <span class="in">`r params$delta_t`</span> model units;</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**IMPROVE SIGNAL** instead, if $d' &lt;$ <span class="in">`r params$improve_signal_d_prime`</span> and moving to $t_{\text{opt}}$ would cut expected cost by less than <span class="in">`r pct(params$improve_signal_min_cost_reduction, 1)`</span>.</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>Both rules are shown side by side throughout the site so the difference stays visible.</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Uncertainty</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>Each rule has only a hundred or so confirmed threats, so the error rates are noisy. FRR and FAR are reported with <span class="in">`r pct(params$ci_level, 1)`</span> Wilson score intervals. To test whether a recommendation survives that noise, the counts are resampled <span class="in">`r comma(params$bootstrap_draws)`</span> times: $fn^* \sim \text{Binomial}(TP + FN, \text{FRR})$ and $fp^* \sim \text{Binomial}(FP + TN, \text{FAR})$, with a fixed seed (<span class="in">`r params$seed`</span>). Both decision rules are re-applied to every draw. A recommendation reproduced in fewer than <span class="in">`r pct(params$confidence_threshold, 1)`</span> of draws is labelled **low confidence**. The results are on <span class="co">[</span><span class="ot">Summary &amp; Robustness</span><span class="co">](robustness.qmd#sec-robustness)</span>.</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="fu">## Empirical curves, when score data exist {#sec-empirical}</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>The honest alternative to the Gaussian model is to measure FRR and FAR at several real thresholds, using replayed logs or stored scores, and plot the measured curve. <span class="in">`build_empirical_curve()`</span> takes one row per threshold, with columns <span class="in">`threshold`</span>, <span class="in">`tp`</span>, <span class="in">`fp`</span>, <span class="in">`fn`</span> and <span class="in">`tn`</span>, and computes FRR and FAR at each. The example below uses five illustrative thresholds for a brute-force rule, expressed in failed attempts per account-hour. The middle row reproduces the Brute Force Login counts used on the rest of the site.</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-empirical</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Illustrative empirical FRR and FAR curve for a brute-force rule at five real thresholds (failed attempts per account-hour). Steps join the measured points; no distributional model is assumed."</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>empirical_example <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>threshold, <span class="sc">~</span>tp, <span class="sc">~</span>fp, <span class="sc">~</span>fn, <span class="sc">~</span>tn,</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>           <span class="dv">3</span>,  <span class="dv">97</span>, <span class="dv">540</span>,   <span class="dv">3</span>, <span class="dv">360</span>,</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>           <span class="dv">5</span>,  <span class="dv">90</span>, <span class="dv">380</span>,  <span class="dv">10</span>, <span class="dv">520</span>,</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>           <span class="dv">8</span>,  <span class="dv">80</span>, <span class="dv">200</span>,  <span class="dv">20</span>, <span class="dv">700</span>,</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>          <span class="dv">12</span>,  <span class="dv">62</span>,  <span class="dv">95</span>,  <span class="dv">38</span>, <span class="dv">805</span>,</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>          <span class="dv">20</span>,  <span class="dv">40</span>,  <span class="dv">30</span>,  <span class="dv">60</span>, <span class="dv">870</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>empirical_curve <span class="ot">&lt;-</span> <span class="fu">build_empirical_curve</span>(empirical_example)</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>empirical_curve <span class="sc">|&gt;</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_empirical_curve</span>(<span class="at">x_label =</span> <span class="st">"Threshold (failed attempts per account-hour)"</span>)</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>**How to read the plot.** The horizontal axis is the rule's real setting: how many failed logins an account needs within an hour before an alert fires. The blue line is the share of real attacks missed at each setting, and the red line is the share of harmless activity wrongly flagged. Each dot is a setting that was actually tested. The flat steps between dots show that nothing is assumed about the untested settings in between.</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>**What the plot tells you.** Raising the setting from <span class="in">`r min(empirical_curve$threshold)`</span> to <span class="in">`r max(empirical_curve$threshold)`</span> failed attempts cuts false alarms from <span class="in">`r pct(max(empirical_curve$far), 1)`</span> to <span class="in">`r pct(min(empirical_curve$far), 1)`</span> of harmless activity. It also raises missed attacks from <span class="in">`r pct(min(empirical_curve$frr), 1)`</span> to <span class="in">`r pct(max(empirical_curve$frr), 1)`</span>. No setting makes both errors small, so choosing one means judging which error costs more. Once real log data exist, measured curves like this one, in units an engineer can configure, should replace the modelled curves used elsewhere.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© 2026 Patrick Lefler ⦁ <a href="./license.html">MIT License</a> ⦁ Built with R &amp; Quarto</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
