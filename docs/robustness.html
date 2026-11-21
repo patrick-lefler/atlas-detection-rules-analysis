@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Summary &amp; Robustness – ATLAS Threshold Detection Rules Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<link href="./leadership.html" rel="next">
+<link href="./rules.html" rel="prev">
+<link href="./assets/images/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f194567e5c6efeb013b28392ff62c8b4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-fee303ae6e2651b1828198bac5dac9d1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-f194567e5c6efeb013b28392ff62c8b4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7a4d1d70176d107a1e293e9347671d6f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-7a4d1d70176d107a1e293e9347671d6f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-7a4d1d70176d107a1e293e9347671d6f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./robustness.html">Summary &amp; Robustness</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./assets/images/logo.svg" alt="Seeking Eureka" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./assets/images/logo.svg" alt="Seeking Eureka" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methodology.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Methodology</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Rule Analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./robustness.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Summary &amp; Robustness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leadership.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">For Leaders</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reproducibility</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">contents</h2>
+   
+  <ul>
+  <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#sec-robustness" id="toc-sec-robustness" class="nav-link" data-scroll-target="#sec-robustness">Recommendation robustness</a></li>
+  <li><a href="#sec-prevalence" id="toc-sec-prevalence" class="nav-link" data-scroll-target="#sec-prevalence">Sensitivity to threat prevalence</a></li>
+  <li><a href="#interpretation-notes" id="toc-interpretation-notes" class="nav-link" data-scroll-target="#interpretation-notes">Interpretation notes</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Summary &amp; Robustness</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">ATLAS Threshold Detection Rules Analysis: all metrics with uncertainty, and how far the recommendations can be trusted</p>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The tables below bring the three rules together. Comparing a miss rate with a false-positive rate across rules says little about priority by itself, because the two errors cost different amounts. Under the stated cost ratios, expected cost over the review window (in units of one false alarm) is 1,145 for Lateral Movement, 590 for Data Exfiltration and 300 for Brute Force Login. On that basis Lateral Movement is the first priority. The ranking depends on the cost ratios, which are illustrative.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ci_text <span class="ot">&lt;-</span> <span class="cf">function</span>(x, lo, hi) <span class="fu">str_glue</span>(<span class="st">"{pct(x)} ({pct(lo)}–{pct(hi)})"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    rule,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">frr =</span> <span class="fu">ci_text</span>(frr, frr_lo, frr_hi),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">far =</span> <span class="fu">ci_text</span>(far, far_lo, far_hi),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="fu">pct</span>(precision),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">prevalence =</span> <span class="fu">pct</span>(prevalence),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_prime =</span> <span class="fu">number</span>(d_prime, <span class="fl">0.01</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_frr_far =</span> <span class="fu">pct</span>(mean_frr_far),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">eer =</span> <span class="fu">pct</span>(eer)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="st">"FRR (95% CI)"</span>, <span class="st">"FAR (95% CI)"</span>, <span class="st">"Precision"</span>, <span class="st">"Prevalence"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"d′"</span>, <span class="st">"Mean of FRR &amp; FAR"</span>, <span class="st">"Model EER"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-metrics" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Error rates with 95% Wilson intervals, precision, prevalence, separability and EER for each rule
+</figcaption>
+<div aria-describedby="tbl-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Detection rule</th>
+<th data-quarto-table-cell-role="th">FRR (95% CI)</th>
+<th data-quarto-table-cell-role="th">FAR (95% CI)</th>
+<th data-quarto-table-cell-role="th">Precision</th>
+<th data-quarto-table-cell-role="th">Prevalence</th>
+<th data-quarto-table-cell-role="th">d′</th>
+<th data-quarto-table-cell-role="th">Mean of FRR &amp; FAR</th>
+<th data-quarto-table-cell-role="th">Model EER</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Brute Force Login</td>
+<td>20.0% (13.3%–28.9%)</td>
+<td>22.2% (19.6%–25.1%)</td>
+<td>28.6%</td>
+<td>10.0%</td>
+<td>1.61</td>
+<td>21.1%</td>
+<td>21.1%</td>
+</tr>
+<tr class="even">
+<td>Lateral Movement</td>
+<td>45.0% (35.6%–54.8%)</td>
+<td>2.2% (1.4%–3.4%)</td>
+<td>73.3%</td>
+<td>10.0%</td>
+<td>2.14</td>
+<td>23.6%</td>
+<td>14.3%</td>
+</tr>
+<tr class="odd">
+<td>Data Exfiltration</td>
+<td>10.0% (5.5%–17.4%)</td>
+<td>10.0% (8.2%–12.1%)</td>
+<td>50.0%</td>
+<td>10.0%</td>
+<td>2.56</td>
+<td>10.0%</td>
+<td>10.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>How to read the table.</strong> Each row is one rule. The miss rate (FRR) and false-alarm rate (FAR) show a 95% range in brackets, the span the true rate plausibly lies in given the sample size. Precision is the share of alerts that are real; prevalence is the share of events that are threats. d′ scores how well the rule tells threats from normal activity; higher is better. The last two columns compare a quick shortcut with the modelled equal error rate.</p>
+<p><strong>What the table tells you.</strong> The ranges are wide. Lateral Movement’s true miss rate could lie anywhere from 35.6% to 54.8%, because each rule saw only 100 real threats. Brute Force Login has the lowest d′ (1.61), so no setting can lower both of its errors at once. The shortcut overstates Lateral Movement’s equal error rate (23.6% against 14.3%); the two agree only at the crossing point, as for Data Exfiltration.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    rule,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">eer_action =</span> <span class="fu">action_cell</span>(eer_action, eer_label),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">eer_conf =</span> <span class="fu">pct</span>(eer_conf, <span class="dv">1</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_action =</span> <span class="fu">action_cell</span>(cost_action, cost_label),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_conf =</span> <span class="fu">pct</span>(cost_conf, <span class="dv">1</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_ratio =</span> <span class="fu">str_glue</span>(<span class="st">"{cost_ratio}:1"</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    cost_reason</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="st">"EER-based action"</span>, <span class="st">"Confidence"</span>, <span class="st">"Cost-weighted action"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Confidence"</span>, <span class="st">"Cost ratio"</span>, <span class="st">"Cost-weighted rationale"</span>),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-recommendations" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-recommendations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Recommended action under each decision rule, with the share of resamples that reproduce it
+</figcaption>
+<div aria-describedby="tbl-recommendations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Detection rule</th>
+<th data-quarto-table-cell-role="th">EER-based action</th>
+<th data-quarto-table-cell-role="th">Confidence</th>
+<th data-quarto-table-cell-role="th">Cost-weighted action</th>
+<th data-quarto-table-cell-role="th">Confidence</th>
+<th data-quarto-table-cell-role="th">Cost ratio</th>
+<th data-quarto-table-cell-role="th">Cost-weighted rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Brute Force Login</td>
+<td><span style=" font-weight: bold;    color: rgba(156, 31, 54, 255) !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(251, 230, 234, 255) !important;">TIGHTEN (low confidence)</span></td>
+<td>53%</td>
+<td><span style=" font-weight: bold;    color: rgba(138, 82, 0, 255) !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(253, 240, 220, 255) !important;">IMPROVE SIGNAL (low confidence)</span></td>
+<td>68%</td>
+<td>5:1</td>
+<td>Separability is low (d′ = 1.61) and moving to the cost-optimal threshold (FRR 33.1%, FAR 12.1%) cuts expected cost by only 8.5%. Better detection features are needed before a threshold change pays off.</td>
+</tr>
+<tr class="even">
+<td>Lateral Movement</td>
+<td><span style=" font-weight: bold;    color: rgba(15, 52, 96, 255) !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(230, 234, 241, 255) !important;">LOOSEN</span></td>
+<td>100%</td>
+<td><span style=" font-weight: bold;    color: rgba(15, 52, 96, 255) !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(230, 234, 241, 255) !important;">LOOSEN</span></td>
+<td>100%</td>
+<td>25:1</td>
+<td>Lower the threshold to the cost-optimal point (FRR 6.1%, FAR 27.8%); expected cost falls by 64.8%.</td>
+</tr>
+<tr class="odd">
+<td>Data Exfiltration</td>
+<td><span style=" font-weight: bold;    color: rgba(46, 125, 50, 255) !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(232, 245, 234, 255) !important;">HOLD (low confidence)</span></td>
+<td>47%</td>
+<td><span style=" font-weight: bold;    color: rgba(15, 52, 96, 255) !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(230, 234, 241, 255) !important;">LOOSEN</span></td>
+<td>100%</td>
+<td>50:1</td>
+<td>Lower the threshold to the cost-optimal point (FRR 2.6%, FAR 27.0%); expected cost falls by 37.1%.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>How to read the table.</strong> Each row is one rule. The first pair of columns gives the action under the equal-error method and the share of 10,000 resampled datasets that reproduce it. The second pair does the same for the cost-weighted method. The cost ratio is how many false alarms one missed threat is judged to be worth, and the rationale explains the cost-weighted action. Actions reproduced less than 80% of the time are marked low confidence.</p>
+<p><strong>What the table tells you.</strong> The two methods agree, with stable answers, only for Lateral Movement. They diverge elsewhere because the equal-error method quietly values a miss at 9 false alarms for every rule, while the cost-weighted method uses each rule’s stated ratio. Where the methods disagree, the deciding input is that cost ratio. Setting it is a risk-appetite decision for leadership, not a technical setting for engineers.</p>
+</section>
+<section id="sec-robustness" class="level2">
+<h2 class="anchored" data-anchor-id="sec-robustness">Recommendation robustness</h2>
+<p>Each rule’s counts were resampled 10,000 times from binomial distributions with the observed rates, and both decision rules were re-applied to every draw (see <a href="./methodology.html#uncertainty">Methodology</a>). The table shows the share of draws giving each action. A recommendation reproduced in fewer than 80% of draws is labelled low confidence.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>actions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"TIGHTEN"</span>, <span class="st">"HOLD"</span>, <span class="st">"LOOSEN"</span>, <span class="st">"IMPROVE SIGNAL"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>boot <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">action =</span> <span class="fu">factor</span>(action, <span class="at">levels =</span> actions)) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(rule, method, action, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">share =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(method <span class="sc">==</span> <span class="st">"EER-based"</span> <span class="sc">&amp;</span> action <span class="sc">==</span> <span class="st">"IMPROVE SIGNAL"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">share =</span> <span class="fu">pct</span>(share, <span class="fl">0.1</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rule =</span> <span class="fu">factor</span>(rule, <span class="at">levels =</span> results<span class="sc">$</span>rule),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">factor</span>(method, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"EER-based"</span>, <span class="st">"Cost-weighted"</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> action, <span class="at">values_from =</span> share, <span class="at">values_fill =</span> <span class="st">"–"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(rule, method) <span class="sc">|&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="st">"Decision rule"</span>, actions))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-bootstrap" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bootstrap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Share of resamples giving each action, by rule and decision rule
+</figcaption>
+<div aria-describedby="tbl-bootstrap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Detection rule</th>
+<th data-quarto-table-cell-role="th">Decision rule</th>
+<th data-quarto-table-cell-role="th">TIGHTEN</th>
+<th data-quarto-table-cell-role="th">HOLD</th>
+<th data-quarto-table-cell-role="th">LOOSEN</th>
+<th data-quarto-table-cell-role="th">IMPROVE SIGNAL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Brute Force Login</td>
+<td>EER-based</td>
+<td>52.7%</td>
+<td>30.9%</td>
+<td>16.4%</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td>Brute Force Login</td>
+<td>Cost-weighted</td>
+<td>31.7%</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>68.3%</td>
+</tr>
+<tr class="odd">
+<td>Lateral Movement</td>
+<td>EER-based</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>100.0%</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td>Lateral Movement</td>
+<td>Cost-weighted</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>100.0%</td>
+<td>0.0%</td>
+</tr>
+<tr class="odd">
+<td>Data Exfiltration</td>
+<td>EER-based</td>
+<td>27.5%</td>
+<td>46.6%</td>
+<td>25.9%</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td>Data Exfiltration</td>
+<td>Cost-weighted</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>100.0%</td>
+<td>0.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>How to read the table.</strong> Each rule has two rows, one per decision method. Each cell is the share of 10,000 simulated re-runs that produced that action. Every re-run draws new counts from the same rates, adding the random variation a fresh review window would bring. A dash means the method cannot produce that action. A share near 100% means the recommendation is stable; shares spread across several actions mean the data cannot settle the question.</p>
+<p><strong>What the table tells you.</strong> Only Lateral Movement gets a stable answer from both methods. Brute Force Login’s equal-error TIGHTEN rests on a 2.2-point gap against a 2-point tolerance, so chance alone often flips it. Data Exfiltration’s equal-error HOLD is close to a coin toss: a rule sitting exactly on the crossing point lands outside the tolerance about half the time. Its cost-weighted LOOSEN is stable.</p>
+</section>
+<section id="sec-prevalence" class="level2">
+<h2 class="anchored" data-anchor-id="sec-prevalence">Sensitivity to threat prevalence</h2>
+<p>Precision depends on how rare threats are. The table holds each rule’s FRR and FAR fixed and recomputes precision at lower prevalence.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>prevalence_tbl <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">precision =</span> <span class="fu">pct</span>(precision), <span class="at">p =</span> <span class="fu">str_glue</span>(<span class="st">"Prevalence {percent(p, accuracy = 0.1)}"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rule, p, precision) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> p, <span class="at">values_from =</span> precision) <span class="sc">|&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="fu">str_glue</span>(<span class="st">"Prevalence {percent(params$prevalence_grid, accuracy = 0.1)}"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-prevalence" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-prevalence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Precision at the current FRR and FAR for three levels of threat prevalence
+</figcaption>
+<div aria-describedby="tbl-prevalence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed do-not-create-environment cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Detection rule</th>
+<th data-quarto-table-cell-role="th">Prevalence 10.0%</th>
+<th data-quarto-table-cell-role="th">Prevalence 1.0%</th>
+<th data-quarto-table-cell-role="th">Prevalence 0.1%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Brute Force Login</td>
+<td>28.6%</td>
+<td>3.5%</td>
+<td>0.4%</td>
+</tr>
+<tr class="even">
+<td>Lateral Movement</td>
+<td>73.3%</td>
+<td>20.0%</td>
+<td>2.4%</td>
+</tr>
+<tr class="odd">
+<td>Data Exfiltration</td>
+<td>50.0%</td>
+<td>8.3%</td>
+<td>0.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>How to read the table.</strong> Each row is one rule, with its current miss and false-alarm rates held fixed. Each column assumes a different share of events that are real threats: 10% (this dataset), then 1% and 0.1%. Each cell is the resulting precision, the share of the rule’s alerts that would be real threats. Reading across a row shows how quickly the alert queue fills with false alarms as real threats become rarer.</p>
+<p><strong>What the table tells you.</strong> This dataset’s 10% prevalence makes the queues look far healthier than in a real SOC, where threats are usually well under 1% of events. At 0.1%, at most 2.4% of alerts from any rule would be real, so false-alarm rates of 22.2% or 10.0% would bury analysts. The cost-weighted settings, which raise false alarms, need real prevalence and volume data before anyone acts on them.</p>
+</section>
+<section id="interpretation-notes" class="level2">
+<h2 class="anchored" data-anchor-id="interpretation-notes">Interpretation notes</h2>
+<p><strong>TIGHTEN</strong> rules generate alert volumes out of proportion to the threat rate. Raising the threshold cuts tickets immediately, but monitor FRR afterwards. Tightening’s downside is hard to observe: new misses stay invisible until the next labelled window. Stage the change where possible. Move the threshold partway, hold for one review period, and confirm FRR is still acceptable before tightening further.</p>
+<p><strong>LOOSEN</strong> rules have the opposite problem: threats are slipping through. A lower threshold catches more, but increases analyst workload, by the amounts shown in the <a href="./rules.html#sec-projection">projection table</a>. Pair loosening with suppression or case-grouping logic where possible. Loosening without more triage capacity only moves the fatigue problem from one rule to another, and most of the extra alerts will still be benign. Budget for the added volume before implementing the change, not after.</p>
+<p><strong>HOLD</strong> rules sit near their target threshold. Routine monitoring is enough; flag the rule for review if attacker behaviour or data volume shifts materially. A rule can drift out of HOLD without any change to its own threshold. A new attacker technique, a new benign traffic pattern from an infrastructure change, or a change in overall event volume can each move a rule’s real FRR and FAR. HOLD therefore keeps the same review cadence as the other actions, without the same urgency.</p>
+<p><strong>IMPROVE SIGNAL</strong> rules separate threats from benign events too poorly for any threshold to help much. The next step is engineering work on the rule’s features, followed by a fresh labelled window to measure the new d′.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>ATLAS cycle: next steps
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>After implementing threshold changes, re-run this analysis with the confusion-matrix values from the next review period. As a textbook illustration, the DataSecure Inc.&nbsp;example (Mattei 2025, §8.5.5) shows FRR falling from 3% to 0.5%, FAR from 1% to 0.2%, and EER from 2% to 0.35% across one improvement cycle. Those rates are an order of magnitude below the rules here, so the example shows the shape of an improvement cycle, not an expected trajectory for these rules. Such gains come from repeated Measure → Report → Select cycles rather than a single threshold move. Lateral Movement in particular is likely to need more than one cycle.</p>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./rules.html" class="pagination-link" aria-label="Rule Analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Rule Analysis</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./leadership.html" class="pagination-link" aria-label="For Leaders">
+        <span class="nav-page-text">For Leaders</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Summary &amp; Robustness"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "ATLAS Threshold Detection Rules Analysis: all metrics with uncertainty, and how far the recommendations can be trusted"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/setup.R"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/atlas.R"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/analysis.R"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>bf  <span class="ot">&lt;-</span> res[[<span class="st">"Brute Force Login"</span>]]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>lat <span class="ot">&lt;-</span> res[[<span class="st">"Lateral Movement"</span>]]</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>exf <span class="ot">&lt;-</span> res[[<span class="st">"Data Exfiltration"</span>]]</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>top_cost <span class="ot">&lt;-</span> results <span class="sc">|&gt;</span> <span class="fu">slice_max</span>(cost_current, <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>robust_rules <span class="ot">&lt;-</span> results <span class="sc">|&gt;</span> <span class="fu">filter</span>(cost_conf <span class="sc">&gt;=</span> params<span class="sc">$</span>confidence_threshold, eer_conf <span class="sc">&gt;=</span> params<span class="sc">$</span>confidence_threshold)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>The tables below bring the three rules together. Comparing a miss rate with a false-positive rate across rules says little about priority by itself, because the two errors cost different amounts. Under the stated cost ratios, expected cost over the review window (in units of one false alarm) is <span class="in">`r comma(lat$cost_current)`</span> for Lateral Movement, <span class="in">`r comma(exf$cost_current)`</span> for Data Exfiltration and <span class="in">`r comma(bf$cost_current)`</span> for Brute Force Login. On that basis <span class="in">`r top_cost$rule`</span> is the first priority. The ranking depends on the cost ratios, which are illustrative.</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-metrics</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Error rates with 95% Wilson intervals, precision, prevalence, separability and EER for each rule"</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>ci_text <span class="ot">&lt;-</span> <span class="cf">function</span>(x, lo, hi) <span class="fu">str_glue</span>(<span class="st">"{pct(x)} ({pct(lo)}–{pct(hi)})"</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    rule,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">frr =</span> <span class="fu">ci_text</span>(frr, frr_lo, frr_hi),</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">far =</span> <span class="fu">ci_text</span>(far, far_lo, far_hi),</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="fu">pct</span>(precision),</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">prevalence =</span> <span class="fu">pct</span>(prevalence),</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_prime =</span> <span class="fu">number</span>(d_prime, <span class="fl">0.01</span>),</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_frr_far =</span> <span class="fu">pct</span>(mean_frr_far),</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">eer =</span> <span class="fu">pct</span>(eer)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="st">"FRR (95% CI)"</span>, <span class="st">"FAR (95% CI)"</span>, <span class="st">"Precision"</span>, <span class="st">"Prevalence"</span>,</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"d′"</span>, <span class="st">"Mean of FRR &amp; FAR"</span>, <span class="st">"Model EER"</span>)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>**How to read the table.** Each row is one rule. The miss rate (FRR) and false-alarm rate (FAR) show a 95% range in brackets, the span the true rate plausibly lies in given the sample size. Precision is the share of alerts that are real; prevalence is the share of events that are threats. d′ scores how well the rule tells threats from normal activity; higher is better. The last two columns compare a quick shortcut with the modelled equal error rate.</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>**What the table tells you.** The ranges are wide. Lateral Movement's true miss rate could lie anywhere from <span class="in">`r pct(lat$frr_lo)`</span> to <span class="in">`r pct(lat$frr_hi)`</span>, because each rule saw only <span class="in">`r lat$n_threat`</span> real threats. Brute Force Login has the lowest d′ (<span class="in">`r number(bf$d_prime, 0.01)`</span>), so no setting can lower both of its errors at once. The shortcut overstates Lateral Movement's equal error rate (<span class="in">`r pct(lat$mean_frr_far)`</span> against <span class="in">`r pct(lat$eer)`</span>); the two agree only at the crossing point, as for Data Exfiltration.</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-recommendations</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Recommended action under each decision rule, with the share of resamples that reproduce it"</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    rule,</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">eer_action =</span> <span class="fu">action_cell</span>(eer_action, eer_label),</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">eer_conf =</span> <span class="fu">pct</span>(eer_conf, <span class="dv">1</span>),</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_action =</span> <span class="fu">action_cell</span>(cost_action, cost_label),</span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_conf =</span> <span class="fu">pct</span>(cost_conf, <span class="dv">1</span>),</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_ratio =</span> <span class="fu">str_glue</span>(<span class="st">"{cost_ratio}:1"</span>),</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    cost_reason</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="st">"EER-based action"</span>, <span class="st">"Confidence"</span>, <span class="st">"Cost-weighted action"</span>,</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Confidence"</span>, <span class="st">"Cost ratio"</span>, <span class="st">"Cost-weighted rationale"</span>),</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>**How to read the table.** Each row is one rule. The first pair of columns gives the action under the equal-error method and the share of <span class="in">`r comma(params$bootstrap_draws)`</span> resampled datasets that reproduce it. The second pair does the same for the cost-weighted method. The cost ratio is how many false alarms one missed threat is judged to be worth, and the rationale explains the cost-weighted action. Actions reproduced less than <span class="in">`r pct(params$confidence_threshold, 1)`</span> of the time are marked low confidence.</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>**What the table tells you.** The two methods agree, with stable answers, only for <span class="in">`r paste(robust_rules$rule, collapse = " and ")`</span>. They diverge elsewhere because the equal-error method quietly values a miss at <span class="in">`r number(bf$eer_implied_cost_ratio, 1)`</span> false alarms for every rule, while the cost-weighted method uses each rule's stated ratio. Where the methods disagree, the deciding input is that cost ratio. Setting it is a risk-appetite decision for leadership, not a technical setting for engineers.</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommendation robustness {#sec-robustness}</span></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>Each rule's counts were resampled <span class="in">`r comma(params$bootstrap_draws)`</span> times from binomial distributions with the observed rates, and both decision rules were re-applied to every draw (see <span class="co">[</span><span class="ot">Methodology</span><span class="co">](methodology.qmd#uncertainty)</span>). The table shows the share of draws giving each action. A recommendation reproduced in fewer than <span class="in">`r pct(params$confidence_threshold, 1)`</span> of draws is labelled low confidence.</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-bootstrap</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Share of resamples giving each action, by rule and decision rule"</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>actions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"TIGHTEN"</span>, <span class="st">"HOLD"</span>, <span class="st">"LOOSEN"</span>, <span class="st">"IMPROVE SIGNAL"</span>)</span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>boot <span class="sc">|&gt;</span></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">action =</span> <span class="fu">factor</span>(action, <span class="at">levels =</span> actions)) <span class="sc">|&gt;</span></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(rule, method, action, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">share =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(method <span class="sc">==</span> <span class="st">"EER-based"</span> <span class="sc">&amp;</span> action <span class="sc">==</span> <span class="st">"IMPROVE SIGNAL"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">share =</span> <span class="fu">pct</span>(share, <span class="fl">0.1</span>),</span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">rule =</span> <span class="fu">factor</span>(rule, <span class="at">levels =</span> results<span class="sc">$</span>rule),</span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="fu">factor</span>(method, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"EER-based"</span>, <span class="st">"Cost-weighted"</span>))</span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> action, <span class="at">values_from =</span> share, <span class="at">values_fill =</span> <span class="st">"–"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(rule, method) <span class="sc">|&gt;</span></span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="st">"Decision rule"</span>, actions))</span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>**How to read the table.** Each rule has two rows, one per decision method. Each cell is the share of <span class="in">`r comma(params$bootstrap_draws)`</span> simulated re-runs that produced that action. Every re-run draws new counts from the same rates, adding the random variation a fresh review window would bring. A dash means the method cannot produce that action. A share near 100% means the recommendation is stable; shares spread across several actions mean the data cannot settle the question.</span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>**What the table tells you.** Only <span class="in">`r paste(robust_rules$rule, collapse = " and ")`</span> gets a stable answer from both methods. Brute Force Login's equal-error <span class="in">`r bf$eer_action`</span> rests on a <span class="in">`r number(abs(bf$far - bf$frr) * 100, 0.1)`</span>-point gap against a <span class="in">`r number(params$eer_tolerance * 100, 1)`</span>-point tolerance, so chance alone often flips it. Data Exfiltration's equal-error <span class="in">`r exf$eer_action`</span> is close to a coin toss: a rule sitting exactly on the crossing point lands outside the tolerance about half the time. Its cost-weighted <span class="in">`r exf$cost_action`</span> is stable.</span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sensitivity to threat prevalence {#sec-prevalence}</span></span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>Precision depends on how rare threats are. The table holds each rule's FRR and FAR fixed and recomputes precision at lower prevalence.</span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-prevalence</span></span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Precision at the current FRR and FAR for three levels of threat prevalence"</span></span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>prevalence_tbl <span class="sc">|&gt;</span></span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">precision =</span> <span class="fu">pct</span>(precision), <span class="at">p =</span> <span class="fu">str_glue</span>(<span class="st">"Prevalence {percent(p, accuracy = 0.1)}"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rule, p, precision) <span class="sc">|&gt;</span></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> p, <span class="at">values_from =</span> precision) <span class="sc">|&gt;</span></span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_house</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Detection rule"</span>, <span class="fu">str_glue</span>(<span class="st">"Prevalence {percent(params$prevalence_grid, accuracy = 0.1)}"</span>)))</span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>**How to read the table.** Each row is one rule, with its current miss and false-alarm rates held fixed. Each column assumes a different share of events that are real threats: <span class="in">`r pct(params$prevalence_grid[1], 1)`</span> (this dataset), then <span class="in">`r pct(params$prevalence_grid[2], 1)`</span> and <span class="in">`r pct(params$prevalence_grid[3], 0.1)`</span>. Each cell is the resulting precision, the share of the rule's alerts that would be real threats. Reading across a row shows how quickly the alert queue fills with false alarms as real threats become rarer.</span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a>**What the table tells you.** This dataset's <span class="in">`r pct(bf$prevalence, 1)`</span> prevalence makes the queues look far healthier than in a real SOC, where threats are usually well under 1% of events. At 0.1%, at most <span class="in">`r pct(max(prevalence_tbl$precision[prevalence_tbl$p == 0.001]))`</span> of alerts from any rule would be real, so false-alarm rates of <span class="in">`r pct(bf$far)`</span> or <span class="in">`r pct(exf$far)`</span> would bury analysts. The cost-weighted settings, which raise false alarms, need real prevalence and volume data before anyone acts on them.</span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretation notes</span></span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a>**TIGHTEN** rules generate alert volumes out of proportion to the threat rate. Raising the threshold cuts tickets immediately, but monitor FRR afterwards. Tightening's downside is hard to observe: new misses stay invisible until the next labelled window. Stage the change where possible. Move the threshold partway, hold for one review period, and confirm FRR is still acceptable before tightening further.</span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a>**LOOSEN** rules have the opposite problem: threats are slipping through. A lower threshold catches more, but increases analyst workload, by the amounts shown in the <span class="co">[</span><span class="ot">projection table</span><span class="co">](rules.qmd#sec-projection)</span>. Pair loosening with suppression or case-grouping logic where possible. Loosening without more triage capacity only moves the fatigue problem from one rule to another, and most of the extra alerts will still be benign. Budget for the added volume before implementing the change, not after.</span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a>**HOLD** rules sit near their target threshold. Routine monitoring is enough; flag the rule for review if attacker behaviour or data volume shifts materially. A rule can drift out of HOLD without any change to its own threshold. A new attacker technique, a new benign traffic pattern from an infrastructure change, or a change in overall event volume can each move a rule's real FRR and FAR. HOLD therefore keeps the same review cadence as the other actions, without the same urgency.</span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a>**IMPROVE SIGNAL** rules separate threats from benign events too poorly for any threshold to help much. The next step is engineering work on the rule's features, followed by a fresh labelled window to measure the new d′.</span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple" icon=false}</span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## ATLAS cycle: next steps</span></span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>After implementing threshold changes, re-run this analysis with the confusion-matrix values from the next review period. As a textbook illustration, the DataSecure Inc. example (Mattei 2025, §8.5.5) shows FRR falling from 3% to 0.5%, FAR from 1% to 0.2%, and EER from 2% to 0.35% across one improvement cycle. Those rates are an order of magnitude below the rules here, so the example shows the shape of an improvement cycle, not an expected trajectory for these rules. Such gains come from repeated Measure → Report → Select cycles rather than a single threshold move. Lateral Movement in particular is likely to need more than one cycle.</span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© 2026 Patrick Lefler ⦁ <a href="./license.html">MIT License</a> ⦁ Built with R &amp; Quarto</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

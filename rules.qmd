@@ -1,0 +1,141 @@
+---
+title: "Rule Analysis"
+subtitle: "ATLAS Threshold Detection Rules Analysis: inputs, calibration charts and projected workload by rule"
+---
+
+```{r load}
+#| include: false
+source("R/setup.R")
+source("R/atlas.R")
+source("R/analysis.R")
+
+bf  <- res[["Brute Force Login"]]
+lat <- res[["Lateral Movement"]]
+exf <- res[["Data Exfiltration"]]
+bf_eer   <- proj[["Brute Force Login.EER"]]
+bf_opt   <- proj[["Brute Force Login.Cost-optimal"]]
+lat_eer  <- proj[["Lateral Movement.EER"]]
+lat_opt  <- proj[["Lateral Movement.Cost-optimal"]]
+exf_opt  <- proj[["Data Exfiltration.Cost-optimal"]]
+minutes  <- params$analyst_minutes_per_alert
+lowest_eer_rule <- results$rule[which.min(results$eer)]
+
+conf_note <- function(conf) {
+  low <- if (conf < params$confidence_threshold) ", low confidence" else ""
+  str_glue("reproduced in {pct(conf, 1)} of resamples{low}")
+}
+
+rec_line <- function(r) {
+  str_glue(
+    "**Cost-weighted: {r$cost_action}** ({conf_note(r$cost_conf)}). {r$cost_reason}\n\n",
+    "**EER-based: {r$eer_action}** ({conf_note(r$eer_conf)}). {r$eer_reason}"
+  )
+}
+```
+
+This page sets out the input data, then takes each rule in turn: its calibration chart, both recommendations, and what the numbers mean operationally. It ends with the projected change in detections and analyst workload if each rule moves to its EER or its cost-optimal threshold. Definitions are on [Methodology](methodology.qmd). The limits of this analysis are listed under [Known limitations](reproducibility.qmd#sec-limitations).
+
+## Detection rules {#sec-rules-table}
+
+::: {.callout-warning icon=false}
+## Illustrative data
+
+The counts are constructed for teaching and do not come from a production SOC. Each rule uses `r comma(bf$n_threat + bf$n_benign)` events and `r bf$n_threat` threats (`r pct(bf$prevalence, 1)` prevalence). The units, windows, sources of missed-threat labels and cost ratios are illustrative too.
+:::
+
+Each row is one rule's classification outcomes over a fixed, labelled review window. True positives and false negatives make up the threat population that FRR is measured against. False positives and true negatives make up the benign population that FAR is measured against. The **unit** defines what one event is, and so sets the denominator of FAR. The **FN source** says how missed threats were found, which matters because each source has its own blind spots. The **cost ratio** is the cost of one missed threat expressed in false alarms; it is a risk-appetite input, not a measurement. To analyse a different rule set, edit `rules` in `params.yaml` and re-render.
+
+```{r}
+#| label: tbl-rules
+#| tbl-cap: "Detection rules and confusion-matrix counts at the current threshold"
+rules |>
+  select(rule_name, unit, window_days, fn_source, tp, fp, fn, tn, cost_ratio) |>
+  mutate(cost_ratio = str_glue("{cost_ratio}:1")) |>
+  kable_house(
+    col.names = c("Detection rule", "Unit of analysis", "Window (days)", "FN source",
+                  "TP", "FP", "FN", "TN", "Cost ratio (miss : false alarm)")
+  )
+```
+
+**How to read the table.** Each row is one detection rule over a `r rules$window_days[1]`-day review. The unit column says what counts as one event, and the FN source says how missed threats were discovered. TP counts real threats caught, FP harmless events flagged, FN real threats missed, and TN harmless events correctly ignored. The final column states how many false alarms one missed threat is judged to be worth, which is a risk-appetite setting.
+
+**What the table tells you.** Every rule saw `r comma(bf$n_threat + bf$n_benign)` events, `r bf$n_threat` of them real threats, so differences between rules come from their settings and detection logic, not from data volume. Brute Force Login raises the most false alarms (`r bf$fp`) and Lateral Movement misses the most threats (`r lat$fn`). Data Exfiltration carries the highest cost ratio, `r exf$cost_ratio`:1, because a missed data theft is the most damaging outcome here. These counts are illustrative.
+
+## Brute Force Login
+
+```{r}
+#| label: fig-brute-force
+#| fig-cap: "Brute Force Login. Dotted line: current threshold (coloured by the cost-weighted action). Long-dashed line: cost-optimal threshold. Open circle: EER crossover. Filled points: observed FRR and FAR. Curves are from an equal-variance two-Gaussian model anchored to the single observed point; they are illustrative, not measured."
+plot_rule(bf)
+```
+
+**How to read the plot.** The horizontal axis is the rule's alert threshold in model units; moving right means fewer alerts. The red curve is the share of harmless events flagged and the blue curve the share of real threats missed. The dotted line marks today's setting and the dashed line the lowest-cost setting. The open circle is where the two error rates are equal: the equal error rate (EER).
+
+**What the plot tells you.** Today's setting sits almost on the crossing point: `r pct(bf$frr)` of attacks are missed and `r pct(bf$far)` of harmless events are flagged. The curves cross at a high level (EER `r pct(bf$eer)`), which shows the rule separates attacks from normal activity poorly. Moving to the lowest-cost setting would cut false alarms but miss more attacks, saving only `r pct(bf$cost_reduction)` of expected cost. The fix is better detection logic, not a new setting.
+
+`r rec_line(bf)`
+
+Brute Force Login is already close to its EER. Under the model, the current threshold sits `r number(abs(bf$t_eer - bf$t_current), 0.01)` model units `r if_else(bf$t_current < bf$t_eer, "below", "above")` the EER threshold. Moving there would `r if_else(bf_eer$delta_fp < 0, "cut", "raise")` false positives from `r bf$fp` to about `r number(bf_eer$fp_new, 1)`, roughly `r pct(abs(bf_eer$delta_fp) / bf$fp, 1)`. The rule flags about `r number(bf$fp / bf$tp, 0.1)` benign events for every real attempt it catches (`r bf$fp` false positives against `r bf$tp` true positives). That ratio reflects low precision at this prevalence, not a FAR–FRR imbalance, and a threshold tweak will not fix it.
+
+The rule's real problem is weak separability: d′ = `r number(bf$d_prime, 0.01)`. Even the cost-optimal threshold only trades `r number(abs(bf_opt$delta_tp), 1)` `r if_else(bf_opt$delta_tp < 0, "fewer", "more")` detections for `r number(abs(bf_opt$delta_fp), 1)` `r if_else(bf_opt$delta_fp < 0, "fewer", "more")` false alarms. Raising a per-account failed-attempt count would also make the rule easier to evade with password spraying and low-and-slow credential stuffing, which stay under per-account thresholds by design. Better levers improve the signal: count distinct accounts per source, group by source IP or ASN, alert on a success that follows failures, and allowlist known service accounts and single-sign-on retry patterns.
+
+## Lateral Movement
+
+```{r}
+#| label: fig-lateral-movement
+#| fig-cap: "Lateral Movement. Dotted line: current threshold (coloured by the cost-weighted action). Long-dashed line: cost-optimal threshold. Open circle: EER crossover. Filled points: observed FRR and FAR. Curves are from an equal-variance two-Gaussian model anchored to the single observed point; they are illustrative, not measured."
+plot_rule(lat)
+```
+
+**How to read the plot.** The horizontal axis is the rule's alert threshold in model units; moving right means fewer alerts. The red curve is the share of harmless events flagged and the blue curve the share of real threats missed. The dotted line marks today's setting and the dashed line the lowest-cost setting. The open circle is where the two error rates are equal: the equal error rate (EER).
+
+**What the plot tells you.** Today's setting sits far to the right of the crossing point. The rule flags only `r pct(lat$far)` of harmless events but misses `r pct(lat$frr)` of real attacks. The lowest-cost setting lies well to the left, where it would miss `r pct(lat$frr_opt)` of attacks and flag `r pct(lat$far_opt)` of harmless events. That move would cut expected cost by `r pct(lat$cost_reduction)`, but it would sharply increase the number of alerts analysts must handle.
+
+`r rec_line(lat)`
+
+Lateral Movement misses `r pct(lat$frr)` of confirmed lateral-movement events (95% CI `r pct(lat$frr_lo)`–`r pct(lat$frr_hi)`), while its FAR is only `r pct(lat$far)`. It is the only rule whose recommendation holds up under resampling with both decision rules. One hypothesis, not tested here, is that the rule was tuned conservatively to avoid flagging legitimate administrative activity such as RDP or PsExec use by IT staff. Lateral movement is often the step between an initial foothold and the attacker's objective, so a rule that catches only about half of it leaves a wide window for an intrusion to progress.
+
+Loosening has a measurable cost. Moving to the EER would add about `r number(lat_eer$delta_tp, 1)` detections and `r number(lat_eer$delta_fp, 1)` false alarms per window, and precision would fall from `r pct(lat$precision)` to `r pct(lat_eer$precision_new)`. At `r minutes` minutes per alert, that is about `r number(lat_eer$delta_hours, 1)` extra analyst hours per window. Moving all the way to the cost-optimal threshold adds `r number(lat_opt$delta_tp, 1)` detections and `r number(lat_opt$delta_fp, 1)` false alarms (`r number(lat_opt$delta_hours, 1)` hours). At realistic prevalence the added false alarms would be far larger. Behavioural detections may close the gap more cheaply than one numeric threshold: first-seen host pairs, remote service creation, writes to admin shares, and PsExec or WMI launched from non-admin sources, combined with allowlisting jump hosts and admin tooling.
+
+## Data Exfiltration
+
+```{r}
+#| label: fig-data-exfil
+#| fig-cap: "Data Exfiltration. Dotted line: current threshold (coloured by the cost-weighted action). Long-dashed line: cost-optimal threshold. Open circle: EER crossover. Filled points: observed FRR and FAR. Curves are from an equal-variance two-Gaussian model anchored to the single observed point; they are illustrative, not measured."
+plot_rule(exf)
+```
+
+**How to read the plot.** The horizontal axis is the rule's alert threshold in model units; moving right means fewer alerts. The red curve is the share of harmless events flagged and the blue curve the share of real threats missed. The dotted line marks today's setting and the dashed line the lowest-cost setting. The open circle is where the two error rates are equal: the equal error rate (EER).
+
+**What the plot tells you.** Today's setting sits exactly on the crossing point, missing `r pct(exf$frr)` of attacks and flagging `r pct(exf$far)` of harmless events. That balance treats one missed data theft as costing only `r number(exf$eer_implied_cost_ratio, 1)` false alarms. At the stated `r exf$cost_ratio`:1, the lowest-cost setting lies to the left: misses fall to `r pct(exf$frr_opt)`, but false alarms rise to `r pct(exf$far_opt)`. `r if (lowest_eer_rule == "Data Exfiltration") "Its crossing point is the lowest of the three rules, so it separates threats from normal activity best." else ""`
+
+`r rec_line(exf)`
+
+Data Exfiltration sits at its EER: FRR is `r pct(exf$frr)` and FAR is `r pct(exf$far)`. The EER-based `r exf$eer_action` is fragile, though: it is reproduced in only `r pct(exf$eer_conf, 1)` of resamples. Given this rule's consequence (confirmed data loss), the cost-weighted analysis favours a lower FRR than the EER. HOLD at the EER implicitly assumes a `r number(exf$eer_implied_cost_ratio, 1)`:1 miss-to-false-alarm cost ratio; at the stated `r exf$cost_ratio`:1, the cost-optimal threshold cuts FRR to `r pct(exf$frr_opt)` but raises FAR to `r pct(exf$far_opt)`. That would add about `r number(exf_opt$delta_fp, 1)` false alarms per window (`r number(exf_opt$delta_hours, 1)` analyst hours). Moving the threshold only trades one error for the other. Lowering both requires a materially better detection signal, such as destination reputation, user and host baselines, or data-classification context.
+
+## Projected change at the recommended threshold {#sec-projection}
+
+The table shows what the model predicts for each rule at two targets, the EER and the cost-optimal threshold, over the same review window. Changes are relative to the current counts. Extra analyst hours assume `r minutes` minutes to triage each alert.
+
+```{r}
+#| label: tbl-projection
+#| tbl-cap: "Projected change in detections, false alarms and analyst hours at the EER and cost-optimal thresholds"
+projection |>
+  transmute(
+    rule, target,
+    tp = str_glue("{tp} → {number(tp_new, 1)}"),
+    delta_tp = number(delta_tp, 1, style_positive = "plus"),
+    fp = str_glue("{fp} → {number(fp_new, 1)}"),
+    delta_fp = number(delta_fp, 1, style_positive = "plus"),
+    precision = str_glue("{pct(precision)} → {pct(precision_new)}"),
+    delta_hours = number(delta_hours, 0.1, style_positive = "plus")
+  ) |>
+  kable_house(
+    col.names = c("Detection rule", "Target", "True positives", "Change", "False positives",
+                  "Change", "Precision", "Analyst hours per window")
+  )
+```
+
+**How to read the table.** Each rule appears twice: once moved to its equal-error setting and once to its lowest-cost setting. Arrows show today's count and the predicted count over a `r rules$window_days[1]`-day window, and the change columns give the difference. Precision is the share of alerts that are real threats. The last column converts the change in false alarms into analyst time at `r minutes` minutes per alert; negative numbers mean time saved.
+
+**What the table tells you.** Making Lateral Movement more sensitive buys detections at a steep price. At its equal-error setting it catches about `r number(lat_eer$delta_tp, 1)` more threats but adds about `r number(lat_eer$delta_fp, 1)` false alarms, roughly `r number(lat_eer$delta_hours, 1)` extra analyst hours per window. Brute Force Login's lowest-cost setting saves about `r number(abs(bf_opt$delta_hours), 1)` hours but misses `r number(abs(bf_opt$delta_tp), 1)` more attacks. These predictions come from a model anchored to one data point, so treat them as rough sizes, not forecasts.

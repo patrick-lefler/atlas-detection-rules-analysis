@@ -1,0 +1,65 @@
+# Every input that drives the analysis. Each value is labelled:
+#   [illustrative] constructed for teaching; not from a production SOC
+#   [assumption]   a modelling or policy choice; change it to match your risk appetite
+#   [convention]   a reporting choice with no effect on the underlying numbers
+
+# Detection rules [illustrative]. Confusion-matrix counts at the current threshold
+# over one labelled review window. Each rule has 1,000 events and 100 threats (10% prevalence).
+#   unit:        what counts as one event (sets the denominator of the false-positive rate)
+#   window_days: length of the labelled review window
+#   fn_source:   how missed threats (false negatives) were identified
+#   cost_ratio:  cost of one missed threat / cost of one false alarm [assumption],
+#                illustrative; set from risk appetite. Plausible range 1-1000.
+rules:
+  - rule_name: "Brute Force Login"
+    tp: 80
+    fp: 200
+    fn: 20
+    tn: 700
+    unit: "account-hour with failed logins"
+    window_days: 30
+    fn_source: "purple-team replay"
+    cost_ratio: 5
+  - rule_name: "Lateral Movement"
+    tp: 55
+    fp: 20
+    fn: 45
+    tn: 880
+    unit: "host-pair admin session"
+    window_days: 30
+    fn_source: "purple-team replay"
+    cost_ratio: 25
+  - rule_name: "Data Exfiltration"
+    tp: 90
+    fp: 90
+    fn: 10
+    tn: 810
+    unit: "outbound flow-hour per host"
+    window_days: 30
+    fn_source: "retro-hunt and DLP incidents"
+    cost_ratio: 50
+
+# EER-based rule (the original ATLAS reading) [assumption]
+# HOLD when |FRR - FAR| is within this many proportion units (0.02 = 2 percentage points). Range 0.01-0.05.
+eer_tolerance: 0.02
+
+# Cost-weighted rule [assumption]
+# HOLD when the current threshold is within this distance (model z-units) of the cost-optimal one. Range 0.05-0.25.
+delta_t: 0.1
+# IMPROVE SIGNAL when separability d' is below this AND moving to the cost-optimal threshold
+# cuts expected cost by less than min_cost_reduction.
+improve_signal_d_prime: 2
+improve_signal_min_cost_reduction: 0.10
+
+# Robustness [convention]
+bootstrap_draws: 10000
+seed: 2026
+# A recommendation reproduced in fewer than this share of resamples is flagged "low confidence".
+confidence_threshold: 0.80
+ci_level: 0.95
+
+# Prevalence sensitivity [assumption]: threat share of events to test precision against.
+prevalence_grid: [0.10, 0.01, 0.001]
+
+# Workload [assumption]: analyst minutes to triage one alert. Range 5-60.
+analyst_minutes_per_alert: 15

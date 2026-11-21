@@ -1,0 +1,161 @@
+---
+title: "Reproducibility"
+subtitle: "ATLAS Threshold Detection Rules Analysis: how to rerun the analysis and where the results can mislead"
+execute:
+  freeze: false
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
+
+```{r load}
+#| include: false
+source("R/setup.R")
+source("R/atlas.R")
+source("R/analysis.R")
+source("R/repro_env.R")
+```
+
+Every number on this site is computed from the illustrative confusion-matrix counts and assumptions in `params.yaml`. Nothing is downloaded during a render, and the only random step (the resampling check) uses a fixed seed, so rendering the same commit with the same package versions gives the same results. This page explains how to rebuild the site, records the environment it was built in, and states where the results can mislead. It is re-executed on every render, so the tests and environment status below are always current.
+
+## Quick start {#quick-start}
+
+The code is in the GitHub repository [patrick-lefler/atlas-detection-rules-analysis](https://github.com/patrick-lefler/atlas-detection-rules-analysis). To rebuild everything from a clean copy:
+
+``` bash
+git clone https://github.com/patrick-lefler/atlas-detection-rules-analysis
+cd atlas-detection-rules-analysis
+Rscript -e 'renv::restore()'   # once: install the package versions pinned in renv.lock
+quarto render
+```
+
+The rendered site is written to `docs/`.
+
+## Environment {#environment}
+
+```{r env}
+#| echo: false
+repro_env_table(packages = c("dplyr", "ggplot2", "kableExtra", "scales")) |>
+  gt::gt()
+```
+
+**How to read the table.** Each row is one piece of software this page was built with and its version. The "Packages" row says whether the installed R packages match the versions pinned in `renv.lock`.
+
+**What the table tells you.** If your versions match these and the packages are in sync, rebuilding the project should give the same numbers. If they differ, small differences in the results may come from the software rather than the analysis.
+
+## Pipeline {#pipeline}
+
+| Script | What it does | Main outputs |
+|:-----------------|:-----------------------------------|:-----------------------|
+| `R/setup.R` | Loads packages, sets the plot theme, the action colours and the table helpers | `COLOURS`, `kable_house()`, `action_cell()`, `pct()` |
+| `R/atlas.R` | Defines the error-rate formulas, Wilson intervals, the Gaussian model, both decision rules, the bootstrap, workload projections and charts | Functions only |
+| `R/analysis.R` | Reads `params.yaml` and computes every result the pages show | `rules`, `results`, `res`, `boot`, `projection`, `proj`, `prevalence_tbl` |
+
+Each page sources the three scripts in a hidden first chunk, so every page works from the same objects. Each script depends on objects from the one before it, so sourcing a later script on its own in a fresh session fails.
+
+## Parameters and seeds {#parameters}
+
+All inputs live in `params.yaml`: the confusion-matrix counts and descriptions of each rule, the cost ratios, the decision-rule settings, the resampling settings, the prevalence grid and analyst minutes per alert. Each value is labelled as illustrative, an assumption or a reporting convention, and assumptions carry a plausible range. The only random step is the resampling check in `bootstrap_rule()`, which calls `set.seed(`r params$seed`)` at the start of each rule, so a rule's result does not depend on the order of the rules or on the number of cores.
+
+::: {.callout-note icon="false" collapse="true"}
+## params.yaml
+
+```{r params-yaml}
+#| echo: false
+#| results: asis
+cat("```yaml\n", paste(readLines("params.yaml"), collapse = "\n"), "\n```\n", sep = "")
+```
+:::
+
+## Tests {#tests}
+
+Core functions are covered by `testthat` tests in `tests/testthat/`. They check the error-rate formulas and published Wilson intervals, that the model passes through the observed point and finds the crossover, that the cost-optimal threshold matches a numerical minimum and reduces to the EER at a cost ratio of (1 − p)/p, both decision rules, determinism of the bootstrap, the workload projection and the empirical curve. Run them with `Rscript -e "testthat::test_dir('tests/testthat')"`. The suite is run each time this page is rendered:
+
+```{r tests}
+#| echo: false
+#| message: false
+tr <- testthat::test_dir("tests/testthat", reporter = "silent", stop_on_failure = FALSE)
+td <- as.data.frame(tr)
+td |>
+  summarise(
+    Tests = n(), Expectations = sum(nb), Failed = sum(failed), Errors = sum(error),
+    Warnings = sum(warning), Skipped = sum(skipped),
+    .by = file
+  ) |>
+  gt::gt()
+```
+
+**How to read the table.** Each row is one file of automated checks on the analysis code. It counts the tests in the file, the individual checks (expectations) those tests make, and how many failed, stopped with an error, raised a warning or were skipped. The checks cover the error-rate formulas, the statistical model, both decision methods, the resampling and the workload projections, each compared with values worked out independently.
+
+**What the table tells you.** All `r sum(td$nb)` checks across `r nrow(td)` tests ran with `r sum(td$failed)` failures and `r sum(td$error)` errors when this page was last built, so the calculations behind every number on the site behaved as designed. The tests re-run on every render, so a change that broke a formula would appear here as a failure. Passing tests show the code does what it intends; they cannot show the illustrative data or assumptions are realistic.
+
+
+## Caching {#caching}
+
+-   **Quarto freeze (`_freeze/`).** `_quarto.yml` sets `freeze: auto`, so a full `quarto render` re-executes a page only when that page's `.qmd` file changes. Edits to `params.yaml` or the `R/` scripts do not count as a change. After editing them, render each page explicitly (for example `quarto render rules.qmd`), because Quarto always executes a page that is rendered on its own, or delete `_freeze/` and render the whole site. This page sets `freeze: false` and is re-executed on every render.
+
+## Known limitations {#limitations}
+
+### Limits of reproducibility {#repro-limits}
+
+-   Bit-for-bit equality is expected only on the same platform and package versions. Floating-point and BLAS differences across machines can change low-order digits.
+-   The resampling check depends on R's default random number generator. A future change to `rbinom()` or the default generator could shift the resampled shares slightly.
+-   Quarto versions affect rendering, not the numbers.
+
+### Model limitations {#sec-limitations}
+
+1.  **The data are illustrative.** Each rule has `r comma(res[[1]]$n_threat + res[[1]]$n_benign)` events and `r res[[1]]$n_threat` threats. The results show the method, not the performance of any real rule.
+2.  **Missed-threat labels carry verification bias.** False negatives can only be counted where something else found the threat: red- or purple-team exercises, retro-hunts, or incidents caught by other controls. Each source finds some kinds of attack more easily than others, so FRR is the least reliable number here, and it drives the most consequential recommendation.
+3.  **FAR depends on the unit of analysis.** What counts as one benign event (an authentication, a session, a flow-hour) sets the FAR denominator. A different unit can move FAR by an order of magnitude without any change to the rule.
+4.  **The curves are assumed, not fitted.** The equal-variance Gaussian model is anchored to a single observed point, so it passes through that point by construction. Real scores are often skewed, heavy-tailed or discrete. See [empirical curves](methodology.qmd#sec-empirical) for the alternative.
+5.  **Thresholds are in model units.** The charts' x-axis is a benign-score z, not a SIEM configuration value. Putting a recommendation into practice means mapping it to real units.
+6.  **Rules are evaluated in isolation.** Defence in depth is ignored: a threat one rule misses may be caught by another control. Detection latency is ignored too, though for lateral movement a late detection can be nearly as bad as a miss.
+7.  **Samples are small.** With about `r res[[1]]$n_threat` threats per rule, the intervals are wide and two of the three EER-based recommendations are not robust; see [Recommendation robustness](robustness.qmd#sec-robustness).
+8.  **Prevalence is unrealistically high.** At `r pct(res[[1]]$prevalence, 1)` prevalence the queues look far healthier than they would in production; see [Sensitivity to threat prevalence](robustness.qmd#sec-prevalence).
+9.  **Cost ratios are illustrative.** The cost-weighted recommendations depend directly on them.
+
+**What would change the conclusions**
+
+| Assumption | Current value | Conclusion that would change |
+|:------------------------|:------------------|:-------------------------------------------|
+| Data Exfiltration cost ratio | `r res[["Data Exfiltration"]]$cost_ratio`:1 | At `r number(res[["Data Exfiltration"]]$eer_implied_cost_ratio, 1)`:1 the cost-optimal and EER thresholds coincide and LOOSEN becomes HOLD. |
+| Brute Force Login cost ratio and the IMPROVE SIGNAL cut-offs | `r res[["Brute Force Login"]]$cost_ratio`:1; d′ < `r params$improve_signal_d_prime`, gain < `r pct(params$improve_signal_min_cost_reduction, 1)` | A lower cost ratio or a lower gain cut-off returns TIGHTEN instead of IMPROVE SIGNAL. |
+| Lateral Movement missed-threat count | `r res[["Lateral Movement"]]$fn` of `r res[["Lateral Movement"]]$n_threat` | If purple-team replays overstate misses, FRR and the size of the LOOSEN move shrink. |
+| Prevalence | `r pct(res[[1]]$prevalence, 1)` | At realistic prevalence, cost-weighted thresholds that raise FAR would produce unmanageable alert volumes. |
+
+**What real data would replace each assumption**
+
+| Assumption | Replace with |
+|:-------------------------------|:-------------------------------------------------|
+| Constructed counts | Confusion matrices from a fixed, labelled review window per rule |
+| One observed point per rule | Counts at several real thresholds from replayed logs, fed to `build_empirical_curve()` |
+| Unit of analysis and window | The unit the rule actually scores and the dates of the review window |
+| Missed-threat labels | Documented purple-team, retro-hunt and incident sources, with coverage notes |
+| Cost ratios | A per-rule ratio agreed with risk owners, linked to the risk-appetite statement |
+| Analyst minutes per alert | Median triage time per rule from the case-management system |
+
+**How to use these results.** Use them to learn the method, to see how recommendations depend on stated costs and on sampling noise, and as a template for a real calibration record. Do not use them as evidence about any real rule's performance, or to set a production threshold without measured counts, real threshold units and an agreed cost ratio.
+
+## Licenses {#licenses}
+
+The code on this site is released under the [MIT License](license.qmd). The data and third-party software keep their own terms:
+
+| Source | Terms |
+|:----------------------|:--------------------------------------------------------|
+| Confusion-matrix counts and parameters | Illustrative values written for this project; part of this repository under the [MIT License](license.qmd) |
+| Quoted passages from Mattei, *Data-Driven Cybersecurity* (Manning, 2025) | Copyright of the publisher; short quotations with section references for commentary |
+| R packages (tidyverse, ggplot2, dplyr, kableExtra, scales, cli, gt, testthat) | MIT, per each package's DESCRIPTION file (e.g. [ggplot2](https://cran.r-project.org/package=ggplot2)) |
+| knitr, sessioninfo | GPL ([knitr](https://cran.r-project.org/package=knitr), [sessioninfo](https://cran.r-project.org/package=sessioninfo)) |
+| yaml | BSD 3-clause ([yaml](https://cran.r-project.org/package=yaml)) |
+
+## Session information {#session-info}
+
+The site was built with R and Quarto. The analysis loads `tidyverse`, `kableExtra`, `knitr`, `scales` and `cli`, and also calls `yaml`, `gt`, `testthat`, `renv` and `sessioninfo`. Package versions are pinned in `renv.lock`; run `renv::restore()` to install them.
+
+::: {.callout-note icon="false" collapse="true"}
+## Full R session information
+```{r session-information}
+#| echo: false
+sessioninfo::session_info()
+```
+:::

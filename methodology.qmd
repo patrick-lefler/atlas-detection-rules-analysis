@@ -1,0 +1,125 @@
+---
+title: "Methodology"
+subtitle: "ATLAS Threshold Detection Rules Analysis: error rates, the calibration model and the decision rules"
+---
+
+```{r load}
+#| include: false
+source("R/setup.R")
+source("R/atlas.R")
+source("R/analysis.R")
+
+p_data <- res[[1]]$prevalence
+```
+
+## Terms used on this site
+
+In this report FRR is the miss rate (false-negative rate) and FAR is the false-positive rate. These labels come from biometrics, where the meanings are reversed: there, a "false rejection" turns away a genuine user and a "false acceptance" admits an impostor. We use the detection-engineering mapping throughout.
+
+A rule raises an alert when an event's score exceeds the rule's **threshold**. The two threshold actions are defined once:
+
+-   **TIGHTEN** = raise the alerting threshold (fewer alerts, more misses).
+-   **LOOSEN** = lower the alerting threshold (more alerts, fewer misses).
+
+A third action, **HOLD**, leaves the threshold where it is. A fourth, **IMPROVE SIGNAL**, says that no threshold move is worth making until the rule's detection features improve (see [Decision rules](#sec-decision-rules)).
+
+### FRR: the miss rate
+
+FRR is the share of actual threats the rule failed to flag (Mattei 2025, §8.5.1). It is computed only over confirmed threats (true positives plus false negatives), so it isolates a rule's blind spot from its noise problem. A rule can have an excellent false-positive rate and still miss many attacks. A high FRR means the threshold is set too high for the threats the rule exists to catch.
+
+$$\text{FRR} = \frac{FN}{TP + FN}$$
+
+Tracking FRR on its own is what keeps an analyst from mistaking a quiet alert queue for a secure environment. A rule with a high FRR often looks well-behaved on a dashboard, with few alerts and low volume, while quietly missing the events it exists to catch. That silence could just as easily mean the rule has stopped seeing what it was built to find.
+
+### FAR: the false-positive rate
+
+FAR is the share of benign events the rule incorrectly flags as threats (Mattei 2025, §8.5.2). A high FAR is the main driver of alert fatigue: analysts are buried in noise, and real threats get lost in the queue.
+
+$$\text{FAR} = \frac{FP}{FP + TN}$$
+
+FAR is computed over the much larger benign population, so even a small rise can mean hundreds of extra tickets in a busy environment. That volume compounds: each false positive an analyst clears trains them, consciously or not, to move faster and scrutinize less on the next one. Under those conditions a genuine alert is most likely to be closed without a second look. FAR also depends on what counts as one benign event (a login, a session, a host-hour), so the unit of analysis must be stated for every rule.
+
+### Precision and prevalence
+
+Analysts feel precision, the share of alerts that are real threats, more directly than FAR. Precision depends on **prevalence** $p$, the share of all events that are threats:
+
+$$\text{Precision} = \frac{TP}{TP + FP} = \frac{(1-\text{FRR})\,p}{(1-\text{FRR})\,p + \text{FAR}\,(1-p)}$$
+
+The same FRR and FAR give far lower precision when threats are rarer. The [prevalence sensitivity table](robustness.qmd#sec-prevalence) shows how much.
+
+### EER: the Equal Error Rate
+
+EER is the error rate at the threshold $t^*$ where FRR equals FAR (Mattei 2025, §8.5.3):
+
+$$\text{EER} = \text{FRR}(t^*) = \text{FAR}(t^*)$$
+
+In the book's words, "The EER is a critical metric representing the point at which the FRR and FAR are equal. It serves as a balanced measure of the system's overall accuracy. The lower the EER, the more reliable the system is at distinguishing between legitimate and illegitimate activities" (Mattei 2025, §8.5.3). EER is therefore best read as a measure of how well a rule separates threats from benign events, not as a place every threshold must sit. Moving a threshold slides the rule along its curve, trading one error for the other. Only a better signal lowers both.[^mean]
+
+[^mean]: The single-point shortcut $(\text{FRR} + \text{FAR})/2$ equals the EER only when the current point is already at the crossover. On this site it appears only as a comparison column, labelled "Mean of FRR & FAR".
+
+## The calibration model {#sec-model}
+
+One confusion matrix gives one point: the FRR and FAR at the current threshold. To see how the errors would change at other thresholds, the analysis assumes an **equal-variance two-Gaussian model**. Benign event scores follow $N(0, 1)$, threat scores follow $N(d', 1)$, and the rule alerts when the score exceeds $t$:
+
+$$\text{FAR}(t) = 1 - \Phi(t), \qquad \text{FRR}(t) = \Phi(t - d')$$
+
+The observed point fixes both unknowns: $t_{\text{current}} = \Phi^{-1}(1 - \text{FAR})$ and $d' = t_{\text{current}} - \Phi^{-1}(\text{FRR})$. The EER threshold is then $t^* = d'/2$ and $\text{EER} = \Phi(-d'/2)$.
+
+**d′ (d-prime)** is the distance between the benign and threat score distributions, in standard deviations. It measures how separable the signal is. A rule with low d′ has no good threshold, because every setting trades a lot of one error for a little of the other. The fix for low d′ is better features, not a different threshold.
+
+Two caveats apply to every chart on this site:
+
+-   The curve passes through the observed point by construction. It shows an assumption, not a measurement. Real detection scores are often skewed, heavy-tailed or discrete (for example, integer counts of failed logins).
+-   The threshold axis is in model units (benign-score z), not in units an engineer can type into a SIEM. Putting a recommendation into practice means mapping it back to real units, ideally through an [empirical curve](#sec-empirical).
+
+## Decision rules {#sec-decision-rules}
+
+### EER-based rule
+
+The original ATLAS reading compares FRR with FAR at the current threshold. It recommends LOOSEN when FRR exceeds FAR by more than `r number(params$eer_tolerance * 100, 1)` percentage points, TIGHTEN when FAR exceeds FRR by more than that, and HOLD otherwise. The `r number(params$eer_tolerance * 100, 1)`-point band is a design choice, not from the book.
+
+### Cost-weighted rule
+
+Let $C$ be the cost of one missed threat divided by the cost of one false alarm. The expected cost per event at threshold $t$ is $C\,p\,\text{FRR}(t) + (1-p)\,\text{FAR}(t)$. Under the model, it is lowest at
+
+$$t_{\text{opt}} = \frac{d'}{2} + \frac{1}{d'} \ln\!\left(\frac{1-p}{C\,p}\right)$$
+
+Setting $t_{\text{opt}} = t^*$ shows what the EER assumes. **EER is equivalent to a cost ratio of** $(1-p)/p$, which is `r number((1 - p_data) / p_data, 1)`:1 at the `r pct(p_data, 1)` prevalence in this dataset and about 1,000:1 at 0.1% prevalence. **Choosing EER is therefore an implicit risk-appetite choice**, and it is the same choice for every rule regardless of consequence.
+
+The cost-weighted rule makes that choice explicit, with one cost ratio per rule set from risk appetite (see the [rules table](rules.qmd#sec-rules-table)). It returns:
+
+-   **TIGHTEN** if $t_{\text{current}} < t_{\text{opt}} - \delta$, **LOOSEN** if $t_{\text{current}} > t_{\text{opt}} + \delta$, and **HOLD** otherwise, with $\delta$ = `r params$delta_t` model units;
+-   **IMPROVE SIGNAL** instead, if $d' <$ `r params$improve_signal_d_prime` and moving to $t_{\text{opt}}$ would cut expected cost by less than `r pct(params$improve_signal_min_cost_reduction, 1)`.
+
+Both rules are shown side by side throughout the site so the difference stays visible.
+
+## Uncertainty
+
+Each rule has only a hundred or so confirmed threats, so the error rates are noisy. FRR and FAR are reported with `r pct(params$ci_level, 1)` Wilson score intervals. To test whether a recommendation survives that noise, the counts are resampled `r comma(params$bootstrap_draws)` times: $fn^* \sim \text{Binomial}(TP + FN, \text{FRR})$ and $fp^* \sim \text{Binomial}(FP + TN, \text{FAR})$, with a fixed seed (`r params$seed`). Both decision rules are re-applied to every draw. A recommendation reproduced in fewer than `r pct(params$confidence_threshold, 1)` of draws is labelled **low confidence**. The results are on [Summary & Robustness](robustness.qmd#sec-robustness).
+
+## Empirical curves, when score data exist {#sec-empirical}
+
+The honest alternative to the Gaussian model is to measure FRR and FAR at several real thresholds, using replayed logs or stored scores, and plot the measured curve. `build_empirical_curve()` takes one row per threshold, with columns `threshold`, `tp`, `fp`, `fn` and `tn`, and computes FRR and FAR at each. The example below uses five illustrative thresholds for a brute-force rule, expressed in failed attempts per account-hour. The middle row reproduces the Brute Force Login counts used on the rest of the site.
+
+```{r}
+#| label: fig-empirical
+#| fig-cap: "Illustrative empirical FRR and FAR curve for a brute-force rule at five real thresholds (failed attempts per account-hour). Steps join the measured points; no distributional model is assumed."
+#| fig-height: 5
+empirical_example <- tribble(
+  ~threshold, ~tp, ~fp, ~fn, ~tn,
+           3,  97, 540,   3, 360,
+           5,  90, 380,  10, 520,
+           8,  80, 200,  20, 700,
+          12,  62,  95,  38, 805,
+          20,  40,  30,  60, 870
+)
+
+empirical_curve <- build_empirical_curve(empirical_example)
+
+empirical_curve |>
+  plot_empirical_curve(x_label = "Threshold (failed attempts per account-hour)")
+```
+
+**How to read the plot.** The horizontal axis is the rule's real setting: how many failed logins an account needs within an hour before an alert fires. The blue line is the share of real attacks missed at each setting, and the red line is the share of harmless activity wrongly flagged. Each dot is a setting that was actually tested. The flat steps between dots show that nothing is assumed about the untested settings in between.
+
+**What the plot tells you.** Raising the setting from `r min(empirical_curve$threshold)` to `r max(empirical_curve$threshold)` failed attempts cuts false alarms from `r pct(max(empirical_curve$far), 1)` to `r pct(min(empirical_curve$far), 1)` of harmless activity. It also raises missed attacks from `r pct(min(empirical_curve$frr), 1)` to `r pct(max(empirical_curve$frr), 1)`. No setting makes both errors small, so choosing one means judging which error costs more. Once real log data exist, measured curves like this one, in units an engineer can configure, should replace the modelled curves used elsewhere.

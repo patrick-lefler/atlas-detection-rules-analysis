@@ -1,0 +1,132 @@
+---
+title: "Summary & Robustness"
+subtitle: "ATLAS Threshold Detection Rules Analysis: all metrics with uncertainty, and how far the recommendations can be trusted"
+---
+
+```{r load}
+#| include: false
+source("R/setup.R")
+source("R/atlas.R")
+source("R/analysis.R")
+
+bf  <- res[["Brute Force Login"]]
+lat <- res[["Lateral Movement"]]
+exf <- res[["Data Exfiltration"]]
+top_cost <- results |> slice_max(cost_current, n = 1)
+robust_rules <- results |> filter(cost_conf >= params$confidence_threshold, eer_conf >= params$confidence_threshold)
+```
+
+## Summary
+
+The tables below bring the three rules together. Comparing a miss rate with a false-positive rate across rules says little about priority by itself, because the two errors cost different amounts. Under the stated cost ratios, expected cost over the review window (in units of one false alarm) is `r comma(lat$cost_current)` for Lateral Movement, `r comma(exf$cost_current)` for Data Exfiltration and `r comma(bf$cost_current)` for Brute Force Login. On that basis `r top_cost$rule` is the first priority. The ranking depends on the cost ratios, which are illustrative.
+
+```{r}
+#| label: tbl-metrics
+#| tbl-cap: "Error rates with 95% Wilson intervals, precision, prevalence, separability and EER for each rule"
+ci_text <- function(x, lo, hi) str_glue("{pct(x)} ({pct(lo)}–{pct(hi)})")
+
+results |>
+  transmute(
+    rule,
+    frr = ci_text(frr, frr_lo, frr_hi),
+    far = ci_text(far, far_lo, far_hi),
+    precision = pct(precision),
+    prevalence = pct(prevalence),
+    d_prime = number(d_prime, 0.01),
+    mean_frr_far = pct(mean_frr_far),
+    eer = pct(eer)
+  ) |>
+  kable_house(
+    col.names = c("Detection rule", "FRR (95% CI)", "FAR (95% CI)", "Precision", "Prevalence",
+                  "d′", "Mean of FRR & FAR", "Model EER")
+  )
+```
+
+**How to read the table.** Each row is one rule. The miss rate (FRR) and false-alarm rate (FAR) show a 95% range in brackets, the span the true rate plausibly lies in given the sample size. Precision is the share of alerts that are real; prevalence is the share of events that are threats. d′ scores how well the rule tells threats from normal activity; higher is better. The last two columns compare a quick shortcut with the modelled equal error rate.
+
+**What the table tells you.** The ranges are wide. Lateral Movement's true miss rate could lie anywhere from `r pct(lat$frr_lo)` to `r pct(lat$frr_hi)`, because each rule saw only `r lat$n_threat` real threats. Brute Force Login has the lowest d′ (`r number(bf$d_prime, 0.01)`), so no setting can lower both of its errors at once. The shortcut overstates Lateral Movement's equal error rate (`r pct(lat$mean_frr_far)` against `r pct(lat$eer)`); the two agree only at the crossing point, as for Data Exfiltration.
+
+```{r}
+#| label: tbl-recommendations
+#| tbl-cap: "Recommended action under each decision rule, with the share of resamples that reproduce it"
+results |>
+  transmute(
+    rule,
+    eer_action = action_cell(eer_action, eer_label),
+    eer_conf = pct(eer_conf, 1),
+    cost_action = action_cell(cost_action, cost_label),
+    cost_conf = pct(cost_conf, 1),
+    cost_ratio = str_glue("{cost_ratio}:1"),
+    cost_reason
+  ) |>
+  kable_house(
+    col.names = c("Detection rule", "EER-based action", "Confidence", "Cost-weighted action",
+                  "Confidence", "Cost ratio", "Cost-weighted rationale"),
+    escape = FALSE
+  )
+```
+
+**How to read the table.** Each row is one rule. The first pair of columns gives the action under the equal-error method and the share of `r comma(params$bootstrap_draws)` resampled datasets that reproduce it. The second pair does the same for the cost-weighted method. The cost ratio is how many false alarms one missed threat is judged to be worth, and the rationale explains the cost-weighted action. Actions reproduced less than `r pct(params$confidence_threshold, 1)` of the time are marked low confidence.
+
+**What the table tells you.** The two methods agree, with stable answers, only for `r paste(robust_rules$rule, collapse = " and ")`. They diverge elsewhere because the equal-error method quietly values a miss at `r number(bf$eer_implied_cost_ratio, 1)` false alarms for every rule, while the cost-weighted method uses each rule's stated ratio. Where the methods disagree, the deciding input is that cost ratio. Setting it is a risk-appetite decision for leadership, not a technical setting for engineers.
+
+## Recommendation robustness {#sec-robustness}
+
+Each rule's counts were resampled `r comma(params$bootstrap_draws)` times from binomial distributions with the observed rates, and both decision rules were re-applied to every draw (see [Methodology](methodology.qmd#uncertainty)). The table shows the share of draws giving each action. A recommendation reproduced in fewer than `r pct(params$confidence_threshold, 1)` of draws is labelled low confidence.
+
+```{r}
+#| label: tbl-bootstrap
+#| tbl-cap: "Share of resamples giving each action, by rule and decision rule"
+actions <- c("TIGHTEN", "HOLD", "LOOSEN", "IMPROVE SIGNAL")
+
+boot |>
+  mutate(action = factor(action, levels = actions)) |>
+  complete(rule, method, action, fill = list(share = 0)) |>
+  filter(!(method == "EER-based" & action == "IMPROVE SIGNAL")) |>
+  mutate(
+    share = pct(share, 0.1),
+    rule = factor(rule, levels = results$rule),
+    method = factor(method, levels = c("EER-based", "Cost-weighted"))
+  ) |>
+  pivot_wider(names_from = action, values_from = share, values_fill = "–") |>
+  arrange(rule, method) |>
+  kable_house(col.names = c("Detection rule", "Decision rule", actions))
+```
+
+**How to read the table.** Each rule has two rows, one per decision method. Each cell is the share of `r comma(params$bootstrap_draws)` simulated re-runs that produced that action. Every re-run draws new counts from the same rates, adding the random variation a fresh review window would bring. A dash means the method cannot produce that action. A share near 100% means the recommendation is stable; shares spread across several actions mean the data cannot settle the question.
+
+**What the table tells you.** Only `r paste(robust_rules$rule, collapse = " and ")` gets a stable answer from both methods. Brute Force Login's equal-error `r bf$eer_action` rests on a `r number(abs(bf$far - bf$frr) * 100, 0.1)`-point gap against a `r number(params$eer_tolerance * 100, 1)`-point tolerance, so chance alone often flips it. Data Exfiltration's equal-error `r exf$eer_action` is close to a coin toss: a rule sitting exactly on the crossing point lands outside the tolerance about half the time. Its cost-weighted `r exf$cost_action` is stable.
+
+## Sensitivity to threat prevalence {#sec-prevalence}
+
+Precision depends on how rare threats are. The table holds each rule's FRR and FAR fixed and recomputes precision at lower prevalence.
+
+```{r}
+#| label: tbl-prevalence
+#| tbl-cap: "Precision at the current FRR and FAR for three levels of threat prevalence"
+prevalence_tbl |>
+  mutate(precision = pct(precision), p = str_glue("Prevalence {percent(p, accuracy = 0.1)}")) |>
+  select(rule, p, precision) |>
+  pivot_wider(names_from = p, values_from = precision) |>
+  kable_house(col.names = c("Detection rule", str_glue("Prevalence {percent(params$prevalence_grid, accuracy = 0.1)}")))
+```
+
+**How to read the table.** Each row is one rule, with its current miss and false-alarm rates held fixed. Each column assumes a different share of events that are real threats: `r pct(params$prevalence_grid[1], 1)` (this dataset), then `r pct(params$prevalence_grid[2], 1)` and `r pct(params$prevalence_grid[3], 0.1)`. Each cell is the resulting precision, the share of the rule's alerts that would be real threats. Reading across a row shows how quickly the alert queue fills with false alarms as real threats become rarer.
+
+**What the table tells you.** This dataset's `r pct(bf$prevalence, 1)` prevalence makes the queues look far healthier than in a real SOC, where threats are usually well under 1% of events. At 0.1%, at most `r pct(max(prevalence_tbl$precision[prevalence_tbl$p == 0.001]))` of alerts from any rule would be real, so false-alarm rates of `r pct(bf$far)` or `r pct(exf$far)` would bury analysts. The cost-weighted settings, which raise false alarms, need real prevalence and volume data before anyone acts on them.
+
+## Interpretation notes
+
+**TIGHTEN** rules generate alert volumes out of proportion to the threat rate. Raising the threshold cuts tickets immediately, but monitor FRR afterwards. Tightening's downside is hard to observe: new misses stay invisible until the next labelled window. Stage the change where possible. Move the threshold partway, hold for one review period, and confirm FRR is still acceptable before tightening further.
+
+**LOOSEN** rules have the opposite problem: threats are slipping through. A lower threshold catches more, but increases analyst workload, by the amounts shown in the [projection table](rules.qmd#sec-projection). Pair loosening with suppression or case-grouping logic where possible. Loosening without more triage capacity only moves the fatigue problem from one rule to another, and most of the extra alerts will still be benign. Budget for the added volume before implementing the change, not after.
+
+**HOLD** rules sit near their target threshold. Routine monitoring is enough; flag the rule for review if attacker behaviour or data volume shifts materially. A rule can drift out of HOLD without any change to its own threshold. A new attacker technique, a new benign traffic pattern from an infrastructure change, or a change in overall event volume can each move a rule's real FRR and FAR. HOLD therefore keeps the same review cadence as the other actions, without the same urgency.
+
+**IMPROVE SIGNAL** rules separate threats from benign events too poorly for any threshold to help much. The next step is engineering work on the rule's features, followed by a fresh labelled window to measure the new d′.
+
+::: {.callout-note appearance="simple" icon=false}
+## ATLAS cycle: next steps
+
+After implementing threshold changes, re-run this analysis with the confusion-matrix values from the next review period. As a textbook illustration, the DataSecure Inc. example (Mattei 2025, §8.5.5) shows FRR falling from 3% to 0.5%, FAR from 1% to 0.2%, and EER from 2% to 0.35% across one improvement cycle. Those rates are an order of magnitude below the rules here, so the example shows the shape of an improvement cycle, not an expected trajectory for these rules. Such gains come from repeated Measure → Report → Select cycles rather than a single threshold move. Lateral Movement in particular is likely to need more than one cycle.
+:::

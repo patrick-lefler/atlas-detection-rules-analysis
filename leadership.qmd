@@ -1,0 +1,41 @@
+---
+title: "For Leaders"
+subtitle: "ATLAS Threshold Detection Rules Analysis: why threshold calibration matters to cybersecurity leaders"
+---
+
+```{r load}
+#| include: false
+source("R/setup.R")
+source("R/atlas.R")
+source("R/analysis.R")
+
+lat <- res[["Lateral Movement"]]
+bf_opt  <- proj[["Brute Force Login.Cost-optimal"]]
+lat_eer <- proj[["Lateral Movement.EER"]]
+minutes <- params$analyst_minutes_per_alert
+window  <- rules$window_days[1]
+```
+
+Every number on this site traces back to a decision someone already made and probably does not remember making: where to set a threshold. That decision is usually treated as a technical footnote, owned by whichever engineer configured the rule and never revisited unless something breaks. It should not be. A detection threshold is a risk decision wearing an engineering costume. The analysis on this site exists to make that decision visible to the people accountable for the risk it creates.
+
+## The threshold is a risk-appetite decision
+
+Every threshold implicitly answers a question the board is already supposed to ask: how much undetected threat will the organization tolerate, in exchange for how much analyst effort? A rule set well above its EER threshold, like Lateral Movement, so that it misses many events, is a de facto statement that the organization accepts a materially higher chance of missing an attacker already inside the network. In this illustrative dataset that rule misses `r pct(lat$frr)` of confirmed events. Nobody signed off on that statement. It was made one configuration change at a time, by engineers optimizing for alert volume rather than enterprise risk.
+
+Even the "balanced" EER target is a choice: at the `r pct(lat$prevalence, 1)` prevalence here, it prices one missed threat at `r number(lat$eer_implied_cost_ratio, 1)` false alarms, for every rule, whatever the consequence of a miss (see [Methodology](methodology.qmd#sec-decision-rules)). The cost-weighted analysis asks leadership to state that ratio per rule. ATLAS does not take the decision out of engineering's hands. It requires the decision to be stated in numbers a risk committee can test against its risk appetite, rather than left implicit in a threshold field nobody has looked at since it was set.
+
+## Alert fatigue is a staffing cost with a name
+
+A high false-positive rate appears on no financial statement, but it has a real cost. Analyst hours spent clearing false positives are hours not spent on the alert that matters. Every false alarm removed through calibration, rather than absorbed by headcount, is capacity recovered without a hiring requisition. Leaders evaluating a request for more SOC staff should ask first whether the underlying detection rules have been calibrated at all.
+
+The [projection table](rules.qmd#sec-projection) puts numbers on this for the illustrative rules, at `r minutes` minutes per alert. Moving Brute Force Login to its cost-optimal threshold would `r if_else(bf_opt$delta_fp < 0, "remove", "add")` about `r number(abs(bf_opt$delta_fp), 1)` false alarms per `r window`-day window, roughly `r number(abs(bf_opt$delta_hours), 1)` analyst hours. Loosening Lateral Movement to its EER would add about `r number(lat_eer$delta_hours, 1)` hours. Calibration cuts both ways: it recovers capacity on noisy rules and spends it on rules with coverage gaps. The value lies in making both moves deliberately and with a budget.
+
+## Audit and regulatory defensibility
+
+Regulators increasingly expect detection controls to be tested, not just installed. In the EU, the Digital Operational Resilience Act ([Regulation (EU) 2022/2554, Article 10](https://eur-lex.europa.eu/eli/reg/2022/2554/oj)) requires financial entities to have mechanisms to promptly detect anomalous activities. It requires those mechanisms to be "regularly tested" (Art. 10(1)) and to "define alert thresholds and criteria to trigger and initiate ICT-related incident response processes" (Art. 10(2)). In New York, the Department of Financial Services cybersecurity regulation ([23 NYCRR 500.14](https://www.law.cornell.edu/regulations/new-york/23-NYCRR-500.14)) requires risk-based controls to monitor the activity of authorized users and detect unauthorized access. For larger "Class A" companies, it also requires endpoint detection and response, plus centralized logging and security event alerting.
+
+Neither text prescribes a calibration method. A documented, repeatable process run on a fixed cadence, producing a dated FRR/FAR/EER record for every reviewed rule, is a practical way to show that thresholds are defined and tested. It turns "we monitor for threats" into evidence an auditor can test. Without such a record, an organization may struggle to demonstrate that its alert thresholds were deliberately set, whatever its detection performance. From an audit standpoint, a program with mediocre FRR and a documented calibration history is easier to defend than one with unknown FRR and no history.
+
+## What this analysis does not solve
+
+None of this makes threshold calibration free. Loosening a rule to close a coverage gap increases analyst workload immediately. It improves detection only if the extra alerts are actually triaged, which takes either spare capacity or a budget conversation; the finding does not execute itself. Tightening a noisy rule can quietly raise FRR if nobody monitors it afterwards, trading one blind spot for another. Some rules, like Brute Force Login here, need better features rather than a different threshold. Leaders should treat this analysis, and the ATLAS cycles that follow it, as input to that conversation, not a substitute for it. The value of running ATLAS on a fixed cadence is not a perfect threshold on the first pass. It replaces a one-time guess with a record of deliberate, revisited decisions the organization can stand behind when someone eventually asks why a rule was set the way it was.
